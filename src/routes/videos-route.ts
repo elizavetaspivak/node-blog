@@ -94,7 +94,7 @@ videosRoute.post('/', (req, res) => {
 })
 
 videosRoute.put('/:id', (req, res) => {
-    let createdAt = new Date()
+    const createdAt = new Date()
     const id = req.params.id
 
     if (!id) {
