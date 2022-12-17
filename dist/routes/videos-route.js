@@ -59,7 +59,6 @@ exports.videosRoute.post('/', (req, res) => {
     res.status(201).json(newVideo);
 });
 exports.videosRoute.put('/:id', (req, res) => {
-    let createdAt = new Date();
     const id = req.params.id;
     if (!id) {
         res.sendStatus(404);
@@ -97,10 +96,6 @@ exports.videosRoute.put('/:id', (req, res) => {
             field: 'minAgeRestriction'
         });
     }
-    if (!publicationDate) {
-        publicationDate = new Date().toISOString();
-        publicationDate.setDate(createdAt.getDate() + 1);
-    }
     if (errors.errorsMessages.length) {
         res.status(400).send(errors);
         return;
@@ -112,7 +107,7 @@ exports.videosRoute.put('/:id', (req, res) => {
         return;
     }
     let newItem = Object.assign(Object.assign({}, video), { canBeDownloaded,
-        minAgeRestriction, createdAt: createdAt.toISOString(), publicationDate: publicationDate, title,
+        minAgeRestriction, publicationDate: publicationDate, title,
         author,
         availableResolutions });
     delete_all_data_route_1.videos.splice(videoIndex, 1, newItem);

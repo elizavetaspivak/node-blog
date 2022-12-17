@@ -94,7 +94,6 @@ videosRoute.post('/', (req, res) => {
 })
 
 videosRoute.put('/:id', (req, res) => {
-    const createdAt = new Date()
     const id = req.params.id
 
     if (!id) {
@@ -141,12 +140,6 @@ videosRoute.put('/:id', (req, res) => {
         })
     }
 
-    if (!publicationDate) {
-        publicationDate = new Date().toISOString()
-
-        publicationDate.setDate(createdAt.getDate() + 1)
-    }
-
     if (errors.errorsMessages.length) {
         res.status(400).send(errors)
         return
@@ -165,7 +158,6 @@ videosRoute.put('/:id', (req, res) => {
         ...video,
         canBeDownloaded,
         minAgeRestriction,
-        createdAt: createdAt.toISOString(),
         publicationDate: publicationDate,
         title,
         author,
