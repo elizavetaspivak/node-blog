@@ -1,22 +1,13 @@
 import {Router} from "express";
 import {AvailableResolutions} from "../repositories/testing-repository";
 import {VideosRepository} from "../repositories/videos-repository";
-import {body, validationResult} from "express-validator";
+import {validationResult} from "express-validator";
 import {
     authorValidator,
     availableResolutionsValidator, canBeDownloadedValidator,
     minAgeRestrictionValidator, publicationDateValidator,
     titleValidator
 } from "../validators/video-validators";
-
-type errorMessageType = {
-    message: string
-    field: string
-}
-
-type ErrorType = {
-    errorsMessages: errorMessageType[]
-}
 
 export const videosRoute = Router({})
 
