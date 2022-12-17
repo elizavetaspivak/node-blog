@@ -37,18 +37,20 @@ videosRoute.get('/:id', (req, res) => {
         return
     }
 
-    res.sendStatus(200).send(videos)
+    res.status(200).json(videos)
 })
 
 videosRoute.post('/', (req, res) => {
     let errors: ErrorType = {
         errorsMessages: []
     }
+
+    console.log(req.body)
     const title = req.body.title
     const author = req.body.author
     const availableResolutions = req.body.availableResolutions
 
-    if (!title || title.length.trim() > 40) {
+    if (!title || title.length > 40) {
         errors.errorsMessages.push({message: 'Incorrect title', field: 'title'})
     }
 
@@ -62,13 +64,12 @@ videosRoute.post('/', (req, res) => {
                 message: 'Incorrect availableResolutions',
                 field: 'availableResolutions'
             })
-            return
         })
     }
 
     if (errors.errorsMessages.length) {
-        res.sendStatus(400).send(errors)
-        return;
+        res.status(400).send(errors)
+        return
     }
 
     let createdAt = new Date()
@@ -86,5 +87,5 @@ videosRoute.post('/', (req, res) => {
 
     videos.push(newVideo)
 
-    res.sendStatus(201).send(newVideo)
+    res.status(201).json(newVideo)
 })
