@@ -2,14 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.videosRoute = void 0;
 const express_1 = require("express");
-const delete_all_data_route_1 = require("./delete-all-data-route");
+const testing_repository_1 = require("../repositories/testing-repository");
+const videos_repository_1 = require("../repositories/videos-repository");
 exports.videosRoute = (0, express_1.Router)({});
 exports.videosRoute.get('/', (req, res) => {
-    res.send(delete_all_data_route_1.videos);
+    const videos = videos_repository_1.VideosRepository.getAllVideos();
+    res.send(videos);
 });
 exports.videosRoute.get('/:id', (req, res) => {
-    const id = req.params.id;
-    const video = delete_all_data_route_1.videos.find(v => v.id === +id);
+    const id = +req.params.id;
+    const video = videos_repository_1.VideosRepository.getVideoById(id);
     if (!video) {
         res.sendStatus(404);
         return;
@@ -31,7 +33,7 @@ exports.videosRoute.post('/', (req, res) => {
     }
     if (availableResolutions) {
         availableResolutions.map((a) => {
-            !delete_all_data_route_1.AvailableResolutions[a] && errors.errorsMessages.push({
+            !testing_repository_1.AvailableResolutions[a] && errors.errorsMessages.push({
                 message: 'Incorrect availableResolutions',
                 field: 'availableResolutions'
             });
@@ -45,8 +47,7 @@ exports.videosRoute.post('/', (req, res) => {
     const createdAt = new Date();
     const publicationDate = new Date();
     publicationDate.setDate(createdAt.getDate() + 1);
-    const newVideo = {
-        id: delete_all_data_route_1.videos.length + 1,
+    const video = videos_repository_1.VideosRepository.createVideo({
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: createdAt.toISOString(),
@@ -54,9 +55,8 @@ exports.videosRoute.post('/', (req, res) => {
         title,
         author,
         availableResolutions
-    };
-    delete_all_data_route_1.videos.push(newVideo);
-    res.status(201).json(newVideo);
+    });
+    res.status(201).json(video);
 });
 exports.videosRoute.put('/:id', (req, res) => {
     const id = req.params.id;
@@ -81,7 +81,7 @@ exports.videosRoute.put('/:id', (req, res) => {
     }
     if (availableResolutions) {
         availableResolutions.map((a) => {
-            !delete_all_data_route_1.AvailableResolutions[a] && errors.errorsMessages.push({
+            !testing_repository_1.AvailableResolutions[a] && errors.errorsMessages.push({
                 message: 'Incorrect availableResolutions',
                 field: 'availableResolutions'
             });
@@ -106,27 +106,29 @@ exports.videosRoute.put('/:id', (req, res) => {
         res.status(400).send(errors);
         return;
     }
-    let videoIndex = delete_all_data_route_1.videos.findIndex(v => v.id === +id);
-    const video = delete_all_data_route_1.videos.find(v => v.id === +id);
+    let video = videos_repository_1.VideosRepository.getVideoById(+id);
     if (!video) {
         res.sendStatus(404);
         return;
     }
-    let newItem = Object.assign(Object.assign({}, video), { canBeDownloaded,
-        minAgeRestriction, publicationDate: publicationDate, title,
+    let newItem = {
+        canBeDownloaded,
+        minAgeRestriction,
+        publicationDate: publicationDate,
+        title,
         author,
-        availableResolutions });
-    delete_all_data_route_1.videos.splice(videoIndex, 1, newItem);
+        availableResolutions
+    };
+    videos_repository_1.VideosRepository.updateVideo(+id, newItem);
     res.sendStatus(204);
 });
 exports.videosRoute.delete('/:id', (req, res) => {
     const id = req.params.id;
-    let videoIndex = delete_all_data_route_1.videos.findIndex(v => v.id === +id);
-    const video = delete_all_data_route_1.videos.find(v => v.id === +id);
+    const video = videos_repository_1.VideosRepository.getVideoById(+id);
     if (!video) {
         res.sendStatus(404);
         return;
     }
-    delete_all_data_route_1.videos.splice(videoIndex, 1);
+    videos_repository_1.VideosRepository.deleteVideo(+id);
     res.sendStatus(204);
 });

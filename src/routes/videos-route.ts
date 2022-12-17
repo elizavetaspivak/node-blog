@@ -1,5 +1,6 @@
 import {Router} from "express";
-import {AvailableResolutions, videos} from "./delete-all-data-route";
+import {AvailableResolutions} from "../repositories/testing-repository";
+import {VideosRepository} from "../repositories/videos-repository";
 
 type errorMessageType = {
     message: string
@@ -25,12 +26,13 @@ export type VideoType = {
 
 
 videosRoute.get('/', (req, res) => {
+    const videos = VideosRepository.getAllVideos()
     res.send(videos)
 })
 
 videosRoute.get('/:id', (req, res) => {
-    const id = req.params.id
-    const video = videos.find(v => v.id === +id)
+    const id = +req.params.id
+    const video = VideosRepository.getVideoById(id)
 
     if (!video) {
         res.sendStatus(404)
@@ -77,8 +79,7 @@ videosRoute.post('/', (req, res) => {
 
     publicationDate.setDate(createdAt.getDate() + 1)
 
-    const newVideo = {
-        id: videos.length + 1,
+    const video = VideosRepository.createVideo({
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: createdAt.toISOString(),
@@ -86,11 +87,9 @@ videosRoute.post('/', (req, res) => {
         title,
         author,
         availableResolutions
-    }
+    })
 
-    videos.push(newVideo)
-
-    res.status(201).json(newVideo)
+    res.status(201).json(video)
 })
 
 videosRoute.put('/:id', (req, res) => {
@@ -151,9 +150,7 @@ videosRoute.put('/:id', (req, res) => {
         return
     }
 
-    let videoIndex = videos.findIndex(v => v.id === +id)
-    const video = videos.find(v => v.id === +id)
-
+    let video = VideosRepository.getVideoById(+id)
 
     if (!video) {
         res.sendStatus(404)
@@ -161,7 +158,6 @@ videosRoute.put('/:id', (req, res) => {
     }
 
     let newItem = {
-        ...video,
         canBeDownloaded,
         minAgeRestriction,
         publicationDate: publicationDate,
@@ -170,7 +166,7 @@ videosRoute.put('/:id', (req, res) => {
         availableResolutions
     }
 
-    videos.splice(videoIndex, 1, newItem)
+    VideosRepository.updateVideo(+id, newItem)
 
     res.sendStatus(204)
 })
@@ -178,16 +174,14 @@ videosRoute.put('/:id', (req, res) => {
 videosRoute.delete('/:id', (req, res) => {
     const id = req.params.id
 
-    let videoIndex = videos.findIndex(v => v.id === +id)
-    const video = videos.find(v => v.id === +id)
-
+    const video = VideosRepository.getVideoById(+id)
 
     if (!video) {
         res.sendStatus(404)
         return;
     }
 
-    videos.splice(videoIndex, 1)
+    VideosRepository.deleteVideo(+id)
 
     res.sendStatus(204)
 })
