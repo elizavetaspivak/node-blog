@@ -11,8 +11,8 @@ const parserMiddleware = bodyParser({})
 
 app.use(parserMiddleware)
 
-app.use('/videos', videosRoute)
-app.use('/testing/all-data', deleteAllDataRoute)
+app.use('/api/videos', videosRoute)
+app.use('/api/testing/all-data', deleteAllDataRoute)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
