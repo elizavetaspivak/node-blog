@@ -4,11 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const videos_route_1 = require("./routes/videos-route");
+const body_parser_1 = __importDefault(require("body-parser"));
+const delete_all_data_route_1 = require("./routes/delete-all-data-route");
 const app = (0, express_1.default)();
 const port = 3000;
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+const parserMiddleware = (0, body_parser_1.default)({});
+app.use(parserMiddleware);
+app.use('/videos', videos_route_1.videosRoute);
+app.use('/testing/all-data', delete_all_data_route_1.deleteAllDataRoute);
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
