@@ -168,3 +168,20 @@ videosRoute.put('/:id', (req, res) => {
 
     res.sendStatus(204)
 })
+
+videosRoute.delete('/:id', (req, res) => {
+    const id = req.params.id
+
+    let videoIndex = videos.findIndex(v => v.id === +id)
+    const video = videos.find(v => v.id === +id)
+
+
+    if (!video) {
+        res.sendStatus(404)
+        return;
+    }
+
+    videos.splice(videoIndex, 1)
+
+    res.sendStatus(204)
+})

@@ -113,3 +113,14 @@ exports.videosRoute.put('/:id', (req, res) => {
     delete_all_data_route_1.videos.splice(videoIndex, 1, newItem);
     res.sendStatus(204);
 });
+exports.videosRoute.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    let videoIndex = delete_all_data_route_1.videos.findIndex(v => v.id === +id);
+    const video = delete_all_data_route_1.videos.find(v => v.id === +id);
+    if (!video) {
+        res.sendStatus(404);
+        return;
+    }
+    delete_all_data_route_1.videos.splice(videoIndex, 1);
+    res.sendStatus(204);
+});
