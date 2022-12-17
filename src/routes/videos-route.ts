@@ -89,3 +89,85 @@ videosRoute.post('/', (req, res) => {
 
     res.status(201).json(newVideo)
 })
+
+videosRoute.put('/:id', (req, res) => {
+    let createdAt = new Date()
+    const id = req.params.id
+
+    if (!id) {
+        res.sendStatus(404)
+        return;
+    }
+
+    let errors: ErrorType = {
+        errorsMessages: []
+    }
+
+    const title = req.body.title
+    const author = req.body.author
+    const availableResolutions = req.body.availableResolutions
+    let canBeDownloaded = req.body.canBeDownloaded
+    const minAgeRestriction = req.body.minAgeRestriction
+    let publicationDate = req.body.publicationDate
+
+    if (!title || title.length > 40) {
+        errors.errorsMessages.push({message: 'Incorrect title', field: 'title'})
+    }
+
+    if (!author || author.length > 20) {
+        errors.errorsMessages.push({message: 'Incorrect author', field: 'author'})
+    }
+
+    if (availableResolutions) {
+        availableResolutions.map((a: AvailableResolutions) => {
+            !AvailableResolutions[a] && errors.errorsMessages.push({
+                message: 'Incorrect availableResolutions',
+                field: 'availableResolutions'
+            })
+        })
+    }
+
+    if (!canBeDownloaded) {
+        canBeDownloaded = false
+    }
+
+    if (minAgeRestriction) {
+        minAgeRestriction < 1 || minAgeRestriction > 18 && errors.errorsMessages.push({
+            message: 'Incorrect minAgeRestriction',
+            field: 'minAgeRestriction'
+        })
+    }
+
+    if (!publicationDate) {
+        publicationDate = new Date(createdAt.getDate() + 1).toISOString()
+    }
+
+    if (errors.errorsMessages.length) {
+        res.status(400).send(errors)
+        return
+    }
+
+    let videoIndex = videos.findIndex(v => v.id === +id)
+    const video = videos.find(v => v.id === +id)
+
+
+    if (!video) {
+        res.sendStatus(404)
+        return;
+    }
+
+    let newItem = {
+        ...video,
+        canBeDownloaded,
+        minAgeRestriction,
+        createdAt: createdAt.toISOString(),
+        publicationDate,
+        title,
+        author,
+        availableResolutions
+    }
+
+    videos.splice(videoIndex, 1, newItem)
+
+    res.sendStatus(204)
+})
