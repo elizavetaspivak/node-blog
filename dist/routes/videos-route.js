@@ -87,8 +87,11 @@ exports.videosRoute.put('/:id', (req, res) => {
             });
         });
     }
-    if (canBeDownloaded === undefined || typeof canBeDownloaded !== "boolean") {
+    if (canBeDownloaded === undefined) {
         canBeDownloaded = false;
+    }
+    else if (typeof canBeDownloaded !== "boolean") {
+        errors.errorsMessages.push({ message: 'Incorrect canBeDownloaded', field: 'canBeDownloaded' });
     }
     if (minAgeRestriction) {
         minAgeRestriction < 1 || minAgeRestriction > 18 && errors.errorsMessages.push({
