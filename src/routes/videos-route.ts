@@ -72,14 +72,17 @@ videosRoute.post('/', (req, res) => {
         return
     }
 
-    let createdAt = new Date()
+    const createdAt = new Date()
+    const publicationDate = new Date()
+
+    publicationDate.setDate(createdAt.getDate() + 1)
 
     const newVideo = {
         id: videos.length + 1,
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: createdAt.toISOString(),
-        publicationDate: new Date(createdAt.getDate() + 1).toISOString(),
+        publicationDate: publicationDate.toISOString(),
         title,
         author,
         availableResolutions
@@ -139,7 +142,9 @@ videosRoute.put('/:id', (req, res) => {
     }
 
     if (!publicationDate) {
-        publicationDate = new Date(createdAt.getDate() + 1).toISOString()
+        publicationDate = new Date()
+
+        publicationDate.setDate(createdAt.getDate() + 1)
     }
 
     if (errors.errorsMessages.length) {
@@ -161,7 +166,7 @@ videosRoute.put('/:id', (req, res) => {
         canBeDownloaded,
         minAgeRestriction,
         createdAt: createdAt.toISOString(),
-        publicationDate,
+        publicationDate: publicationDate.toISOString(),
         title,
         author,
         availableResolutions

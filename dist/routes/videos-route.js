@@ -42,13 +42,15 @@ exports.videosRoute.post('/', (req, res) => {
         res.status(400).send(errors);
         return;
     }
-    let createdAt = new Date();
+    const createdAt = new Date();
+    const publicationDate = new Date();
+    publicationDate.setDate(createdAt.getDate() + 1);
     const newVideo = {
         id: delete_all_data_route_1.videos.length + 1,
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: createdAt.toISOString(),
-        publicationDate: new Date(createdAt.getDate() + 1).toISOString(),
+        publicationDate: publicationDate.toISOString(),
         title,
         author,
         availableResolutions
@@ -96,7 +98,8 @@ exports.videosRoute.put('/:id', (req, res) => {
         });
     }
     if (!publicationDate) {
-        publicationDate = new Date(createdAt.getDate() + 1).toISOString();
+        publicationDate = new Date();
+        publicationDate.setDate(createdAt.getDate() + 1);
     }
     if (errors.errorsMessages.length) {
         res.status(400).send(errors);
@@ -109,8 +112,7 @@ exports.videosRoute.put('/:id', (req, res) => {
         return;
     }
     let newItem = Object.assign(Object.assign({}, video), { canBeDownloaded,
-        minAgeRestriction, createdAt: createdAt.toISOString(), publicationDate,
-        title,
+        minAgeRestriction, createdAt: createdAt.toISOString(), publicationDate: publicationDate.toISOString(), title,
         author,
         availableResolutions });
     delete_all_data_route_1.videos.splice(videoIndex, 1, newItem);
