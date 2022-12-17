@@ -14,13 +14,12 @@ exports.videosRoute.get('/:id', (req, res) => {
         res.sendStatus(404);
         return;
     }
-    res.status(200).json(delete_all_data_route_1.videos);
+    res.status(200).json(video);
 });
 exports.videosRoute.post('/', (req, res) => {
     let errors = {
         errorsMessages: []
     };
-    console.log(req.body);
     const title = req.body.title;
     const author = req.body.author;
     const availableResolutions = req.body.availableResolutions;
@@ -36,6 +35,7 @@ exports.videosRoute.post('/', (req, res) => {
                 message: 'Incorrect availableResolutions',
                 field: 'availableResolutions'
             });
+            return;
         });
     }
     if (errors.errorsMessages.length) {

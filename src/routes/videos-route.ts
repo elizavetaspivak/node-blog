@@ -37,7 +37,7 @@ videosRoute.get('/:id', (req, res) => {
         return
     }
 
-    res.status(200).json(videos)
+    res.status(200).json(video)
 })
 
 videosRoute.post('/', (req, res) => {
@@ -45,7 +45,6 @@ videosRoute.post('/', (req, res) => {
         errorsMessages: []
     }
 
-    console.log(req.body)
     const title = req.body.title
     const author = req.body.author
     const availableResolutions = req.body.availableResolutions
@@ -64,6 +63,7 @@ videosRoute.post('/', (req, res) => {
                 message: 'Incorrect availableResolutions',
                 field: 'availableResolutions'
             })
+            return
         })
     }
 
