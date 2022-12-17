@@ -18,3 +18,15 @@ export type VideoType = {
 videosRoute.get('/', (req, res) => {
     res.send(videos)
 })
+
+videosRoute.get('/:id', (req, res) => {
+    const id = req.params.id
+    const video = videos.find(v => v.id === +id)
+
+    if (!video) {
+        res.sendStatus(404)
+        return
+    }
+
+    res.sendStatus(200).send(videos)
+})
