@@ -88,7 +88,7 @@ exports.videosRoute.put('/:id', (req, res) => {
             });
         });
     }
-    if (!canBeDownloaded) {
+    if (canBeDownloaded === undefined || typeof canBeDownloaded !== "boolean") {
         canBeDownloaded = false;
     }
     if (minAgeRestriction) {

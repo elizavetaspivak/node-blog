@@ -130,7 +130,7 @@ videosRoute.put('/:id', (req, res) => {
         })
     }
 
-    if (!canBeDownloaded || typeof canBeDownloaded !== "boolean") {
+    if (canBeDownloaded === undefined || typeof canBeDownloaded !== "boolean") {
         canBeDownloaded = false
     }
 
