@@ -16,3 +16,11 @@ exports.videosRoute.get('/:id', (req, res) => {
     }
     res.sendStatus(200).send(delete_all_data_route_1.videos);
 });
+exports.videosRoute.post('/', (req, res) => {
+    const video = delete_all_data_route_1.videos.find(v => v.id === +id);
+    if (!video) {
+        res.sendStatus(404);
+        return;
+    }
+    res.sendStatus(200).send(delete_all_data_route_1.videos);
+});

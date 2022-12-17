@@ -30,3 +30,14 @@ videosRoute.get('/:id', (req, res) => {
 
     res.sendStatus(200).send(videos)
 })
+
+videosRoute.post('/', (req, res) => {
+    const video = videos.find(v => v.id === +id)
+
+    if (!video) {
+        res.sendStatus(404)
+        return
+    }
+
+    res.sendStatus(200).send(videos)
+})
