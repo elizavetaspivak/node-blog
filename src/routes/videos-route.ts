@@ -87,7 +87,7 @@ videosRoute.put('/:id', titleValidator, authorValidator, availableResolutionsVal
         const title = req.body.title
         const author = req.body.author
         const availableResolutions = req.body.availableResolutions
-        let canBeDownloaded = req.body.canBeDownloaded = false
+        let canBeDownloaded = req.body.canBeDownloaded ?? false
         const minAgeRestriction = req.body.minAgeRestriction
         let publicationDate = req.body.publicationDate
 
