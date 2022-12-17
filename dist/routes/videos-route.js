@@ -98,7 +98,7 @@ exports.videosRoute.put('/:id', (req, res) => {
         });
     }
     if (!publicationDate) {
-        publicationDate = new Date();
+        publicationDate = new Date().toISOString();
         publicationDate.setDate(createdAt.getDate() + 1);
     }
     if (errors.errorsMessages.length) {
@@ -112,7 +112,7 @@ exports.videosRoute.put('/:id', (req, res) => {
         return;
     }
     let newItem = Object.assign(Object.assign({}, video), { canBeDownloaded,
-        minAgeRestriction, createdAt: createdAt.toISOString(), publicationDate: publicationDate.toISOString(), title,
+        minAgeRestriction, createdAt: createdAt.toISOString(), publicationDate: publicationDate, title,
         author,
         availableResolutions });
     delete_all_data_route_1.videos.splice(videoIndex, 1, newItem);

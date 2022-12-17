@@ -142,7 +142,7 @@ videosRoute.put('/:id', (req, res) => {
     }
 
     if (!publicationDate) {
-        publicationDate = new Date()
+        publicationDate = new Date().toISOString()
 
         publicationDate.setDate(createdAt.getDate() + 1)
     }
@@ -166,7 +166,7 @@ videosRoute.put('/:id', (req, res) => {
         canBeDownloaded,
         minAgeRestriction,
         createdAt: createdAt.toISOString(),
-        publicationDate: publicationDate.toISOString(),
+        publicationDate: publicationDate,
         title,
         author,
         availableResolutions
