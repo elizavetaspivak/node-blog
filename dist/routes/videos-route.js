@@ -27,7 +27,7 @@ exports.videosRoute.post('/', (req, res) => {
     if (!title || title.length > 40) {
         errors.errorsMessages.push({ message: 'Incorrect title', field: 'title' });
     }
-    if (!author || author.length.trim() > 20) {
+    if (!author || author.length > 20) {
         errors.errorsMessages.push({ message: 'Incorrect author', field: 'author' });
     }
     if (availableResolutions) {

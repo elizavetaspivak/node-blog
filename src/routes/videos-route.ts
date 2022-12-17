@@ -54,7 +54,7 @@ videosRoute.post('/', (req, res) => {
         errors.errorsMessages.push({message: 'Incorrect title', field: 'title'})
     }
 
-    if (!author || author.length.trim() > 20) {
+    if (!author || author.length > 20) {
         errors.errorsMessages.push({message: 'Incorrect author', field: 'author'})
     }
 
