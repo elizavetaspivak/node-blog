@@ -1,8 +1,7 @@
 import {Router} from "express";
-import {authMiddleware, blogs} from "./blog-route";
+import {authMiddleware} from "./blog-route";
 import {PostsRepository} from "../repositories/posts-repository";
 import {body, validationResult} from "express-validator";
-import {blogsCollections} from "../db/mongo";
 import {BlogsRepository} from "../repositories/blogs-repository";
 
 
@@ -74,6 +73,7 @@ postRoute.post('/', authMiddleware, titleValidation, shortDescriptionValidation,
     const shortDescription = req.body.shortDescription
     const content = req.body.content
     const blogId = req.body.blogId
+    const createdAt = new Date().toISOString()
 
     const errors = validationResult(req)
 
@@ -87,13 +87,13 @@ postRoute.post('/', authMiddleware, titleValidation, shortDescriptionValidation,
         });
     }
 
-    const createdPostId = await PostsRepository.createPost({title, shortDescription, content, blogId})
-    const post = await PostsRepository.getPostById(createdPostId)
+    const blog = await BlogsRepository.getBlogById(blogId)
 
+    const createdPostId = await PostsRepository.createPost({title, shortDescription, content, blogId, createdAt, blogName: blog.name})
 
     const createdPostMapper = {
         id: createdPostId,
-        title, shortDescription, content, blogId, blogName: post.blogName, createdAt: post.createdAt
+        title, shortDescription, content, blogId, blogName: blog.name, createdAt
     }
 
 

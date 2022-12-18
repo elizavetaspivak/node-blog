@@ -53,6 +53,7 @@ exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortD
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
     const blogId = req.body.blogId;
+    const createdAt = new Date().toISOString();
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const err = errors.array();
@@ -62,11 +63,11 @@ exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortD
             }))
         });
     }
-    const createdPostId = await posts_repository_1.PostsRepository.createPost({ title, shortDescription, content, blogId });
-    const post = await posts_repository_1.PostsRepository.getPostById(createdPostId);
+    const blog = await blogs_repository_1.BlogsRepository.getBlogById(blogId);
+    const createdPostId = await posts_repository_1.PostsRepository.createPost({ title, shortDescription, content, blogId, createdAt, blogName: blog.name });
     const createdPostMapper = {
         id: createdPostId,
-        title, shortDescription, content, blogId, blogName: post.blogName, createdAt: post.createdAt
+        title, shortDescription, content, blogId, blogName: blog.name, createdAt
     };
     res.status(201).json(createdPostMapper);
 });

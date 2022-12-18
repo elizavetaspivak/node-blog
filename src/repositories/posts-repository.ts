@@ -1,7 +1,4 @@
-import {posts} from "./testing-repository";
-import {blogs} from "../routes/blog-route";
-import {v4} from 'uuid'
-import {blogsCollections, postsCollections} from "../db/mongo";
+import {postsCollections} from "../db/mongo";
 import {ObjectId} from "mongodb";
 
 type PostData = {
@@ -9,6 +6,16 @@ type PostData = {
     shortDescription: string,
     content: string,
     blogId: string,
+    createdAt: string
+    blogName: string
+}
+
+
+type UpdatePostData = {
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string
 }
 
 export class PostsRepository {
@@ -36,7 +43,7 @@ export class PostsRepository {
         return res.insertedId
     }
 
-    static async updatePost(id: string, postData: PostData) {
+    static async updatePost(id: string, postData: UpdatePostData) {
         const res = await postsCollections.updateOne({_id: new ObjectId(id)}, {
                 $set: {
                     title: postData.title,
