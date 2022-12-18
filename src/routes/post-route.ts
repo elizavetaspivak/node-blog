@@ -54,8 +54,7 @@ postRoute.get('/:id', (req, res) => {
     res.send(foundedPost)
 })
 
-postRoute.post('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
-    const id = req.params.id
+postRoute.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
     const title = req.body.title
     const shortDescription = req.body.shortDescription
     const content = req.body.content
@@ -73,7 +72,7 @@ postRoute.post('/:id', authMiddleware, titleValidation, shortDescriptionValidati
         });
     }
 
-    const createdPost = PostsRepository.createPost(id, {title, shortDescription, content, blogId})
+    const createdPost = PostsRepository.createPost({title, shortDescription, content, blogId})
 
     res.send(createdPost)
 })

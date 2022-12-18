@@ -22,7 +22,7 @@ export class PostsRepository {
         }
     }
 
-    static createPost(id: string, postData: PostData) {
+    static createPost(postData: PostData) {
 
         const blog = blogs.find(b => b.id === postData.blogId)
 
