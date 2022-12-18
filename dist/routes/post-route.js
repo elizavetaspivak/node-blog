@@ -6,12 +6,12 @@ const blog_route_1 = require("./blog-route");
 const posts_repository_1 = require("../repositories/posts-repository");
 const express_validator_1 = require("express-validator");
 const testing_repository_1 = require("../repositories/testing-repository");
-const titleValidation = (0, express_validator_1.body)('title').isLength({ min: 1, max: 30 }).withMessage('Incorrect title');
+const titleValidation = (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).withMessage('Incorrect title');
 const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription').isLength({
     min: 1,
     max: 100
 }).withMessage('Incorrect shortDescription');
-const contentValidation = (0, express_validator_1.body)('content').isLength({
+const contentValidation = (0, express_validator_1.body)('content').trim().isLength({
     min: 1,
     max: 1000
 }).withMessage('Incorrect content');

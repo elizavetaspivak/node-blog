@@ -14,14 +14,14 @@ export type PostType = {
     blogName: string
 }
 
-const titleValidation = body('title').isLength({min: 1, max: 30}).withMessage('Incorrect title')
+const titleValidation = body('title').trim().isLength({min: 1, max: 30}).withMessage('Incorrect title')
 
 const shortDescriptionValidation = body('shortDescription').isLength({
     min: 1,
     max: 100
 }).withMessage('Incorrect shortDescription')
 
-const contentValidation = body('content').isLength({
+const contentValidation = body('content').trim().isLength({
     min: 1,
     max: 1000
 }).withMessage('Incorrect content')
