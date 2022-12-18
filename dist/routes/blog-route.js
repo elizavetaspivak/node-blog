@@ -29,12 +29,12 @@ exports.blogRoute.get('/:id', (req, res) => {
         res.sendStatus(404);
         return;
     }
-    const blogs = blogs_repository_1.BlogsRepository.getBlogById(id);
-    if (!blogs) {
+    const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
+    if (!blog) {
         res.sendStatus(404);
         return;
     }
-    res.send(blogs);
+    res.send(blog);
 });
 exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
     const name = req.body.name;
@@ -91,10 +91,11 @@ exports.blogRoute.delete('/:id', exports.authMiddleware, (req, res) => {
     if (!id) {
         res.sendStatus(404);
     }
-    const blogs = blogs_repository_1.BlogsRepository.deleteBlogById(id);
-    if (!blogs) {
+    const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
+    if (!blog) {
         res.sendStatus(404);
         return;
     }
+    blogs_repository_1.BlogsRepository.deleteBlogById(id);
     res.sendStatus(204);
 });

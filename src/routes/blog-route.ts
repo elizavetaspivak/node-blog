@@ -1,7 +1,6 @@
 import {NextFunction, Request, Response, Router} from "express";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {body, validationResult} from "express-validator";
-import {PostsRepository} from "../repositories/posts-repository";
 
 export type BlogType = {
     id: string,
@@ -41,14 +40,14 @@ blogRoute.get('/:id', (req, res) => {
         return;
     }
 
-    const blogs = BlogsRepository.getBlogById(id)
+    const blog = BlogsRepository.getBlogById(id)
 
-    if (!blogs) {
+    if (!blog) {
         res.sendStatus(404)
         return
     }
 
-    res.send(blogs)
+    res.send(blog)
 })
 
 blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
