@@ -1,4 +1,6 @@
 import {VideoType} from "../routes/videos-route";
+import {BlogType} from "../routes/blog-route";
+import {PostType} from "../routes/post-route";
 
 export enum AvailableResolutions {
     P144 = 'P144',
@@ -26,8 +28,30 @@ export let videos: VideoType[] = [
     }
 ]
 
+export let blogs: BlogType[] = [
+    {
+        id: "fdsfdsfsd",
+        name: "fsdf",
+        description: "fdsfsd",
+        websiteUrl: "fsdfds"
+    }
+]
+
+export let posts: PostType[] = [
+    {
+        id: "fsdyuifye",
+        title: "fsfsfdsf",
+        shortDescription: "fsdfsdfsd",
+        content: "fgfsd",
+        blogId: "fdsfdsfsd",
+        blogName: "fsdf"
+    }
+]
+
 export class TestingRepository {
     static deleteAllData() {
         videos = []
+        blogs = []
+        posts = []
     }
 }

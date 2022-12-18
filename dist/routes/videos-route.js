@@ -47,6 +47,7 @@ exports.videosRoute.post('/', video_validators_1.titleValidator, video_validator
     res.status(201).json(video);
 });
 exports.videosRoute.put('/:id', video_validators_1.titleValidator, video_validators_1.authorValidator, video_validators_1.availableResolutionsValidator, video_validators_1.minAgeRestrictionValidator, video_validators_1.publicationDateValidator, video_validators_1.canBeDownloadedValidator, (req, res) => {
+    var _a;
     const id = req.params.id;
     if (!id) {
         res.sendStatus(404);
@@ -55,7 +56,7 @@ exports.videosRoute.put('/:id', video_validators_1.titleValidator, video_validat
     const title = req.body.title;
     const author = req.body.author;
     const availableResolutions = req.body.availableResolutions;
-    let canBeDownloaded = req.body.canBeDownloaded = false;
+    let canBeDownloaded = (_a = req.body.canBeDownloaded) !== null && _a !== void 0 ? _a : false;
     const minAgeRestriction = req.body.minAgeRestriction;
     let publicationDate = req.body.publicationDate;
     const errors = (0, express_validator_1.validationResult)(req);

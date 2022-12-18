@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TestingRepository = exports.videos = exports.AvailableResolutions = void 0;
+exports.TestingRepository = exports.posts = exports.blogs = exports.videos = exports.AvailableResolutions = void 0;
 var AvailableResolutions;
 (function (AvailableResolutions) {
     AvailableResolutions["P144"] = "P144";
@@ -26,9 +26,29 @@ exports.videos = [
         ]
     }
 ];
+exports.blogs = [
+    {
+        id: "fdsfdsfsd",
+        name: "fsdf",
+        description: "fdsfsd",
+        websiteUrl: "fsdfds"
+    }
+];
+exports.posts = [
+    {
+        id: "fsdyuifye",
+        title: "fsfsfdsf",
+        shortDescription: "fsdfsdfsd",
+        content: "fgfsd",
+        blogId: "fdsfdsfsd",
+        blogName: "fsdf"
+    }
+];
 class TestingRepository {
     static deleteAllData() {
         exports.videos = [];
+        exports.blogs = [];
+        exports.posts = [];
     }
 }
 exports.TestingRepository = TestingRepository;
