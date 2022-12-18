@@ -53,6 +53,7 @@ postRoute.get('/:id', async (req, res) => {
 
     if (!foundedPost) {
         res.sendStatus(404)
+        return
     }
 
     const postForClient = {
@@ -89,7 +90,14 @@ postRoute.post('/', authMiddleware, titleValidation, shortDescriptionValidation,
 
     const blog = await BlogsRepository.getBlogById(blogId)
 
-    const createdPostId = await PostsRepository.createPost({title, shortDescription, content, blogId, createdAt, blogName: blog.name})
+    const createdPostId = await PostsRepository.createPost({
+        title,
+        shortDescription,
+        content,
+        blogId,
+        createdAt,
+        blogName: blog.name
+    })
 
     const createdPostMapper = {
         id: createdPostId,
@@ -123,6 +131,7 @@ postRoute.put('/:id', authMiddleware, titleValidation, shortDescriptionValidatio
 
     if (!isUpdatePost) {
         res.sendStatus(404)
+        return
     }
 
     res.sendStatus(204)
@@ -133,7 +142,7 @@ postRoute.delete('/:id', authMiddleware, async (req, res) => {
 
     if (!id) {
         res.sendStatus(404)
-
+        return
     }
 
     const post = await PostsRepository.getPostById(id)

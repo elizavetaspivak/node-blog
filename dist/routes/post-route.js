@@ -36,6 +36,7 @@ exports.postRoute.get('/:id', async (req, res) => {
     const foundedPost = await posts_repository_1.PostsRepository.getPostById(id);
     if (!foundedPost) {
         res.sendStatus(404);
+        return;
     }
     const postForClient = {
         id: foundedPost._id,
@@ -64,7 +65,14 @@ exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortD
         });
     }
     const blog = await blogs_repository_1.BlogsRepository.getBlogById(blogId);
-    const createdPostId = await posts_repository_1.PostsRepository.createPost({ title, shortDescription, content, blogId, createdAt, blogName: blog.name });
+    const createdPostId = await posts_repository_1.PostsRepository.createPost({
+        title,
+        shortDescription,
+        content,
+        blogId,
+        createdAt,
+        blogName: blog.name
+    });
     const createdPostMapper = {
         id: createdPostId,
         title, shortDescription, content, blogId, blogName: blog.name, createdAt
@@ -89,6 +97,7 @@ exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shor
     const isUpdatePost = await posts_repository_1.PostsRepository.updatePost(id, { title, shortDescription, content, blogId });
     if (!isUpdatePost) {
         res.sendStatus(404);
+        return;
     }
     res.sendStatus(204);
 });
@@ -96,6 +105,7 @@ exports.postRoute.delete('/:id', blog_route_1.authMiddleware, async (req, res) =
     const id = req.params.id;
     if (!id) {
         res.sendStatus(404);
+        return;
     }
     const post = await posts_repository_1.PostsRepository.getPostById(id);
     if (!post) {
