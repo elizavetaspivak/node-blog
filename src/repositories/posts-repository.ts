@@ -27,6 +27,8 @@ export class PostsRepository {
             title: p.title,
             shortDescription: p.shortDescription,
             content: p.content,
+            blogName: p.blogName,
+            createdAt: p.createdAt,
             blogId: p.blogId,
         }))
     }
