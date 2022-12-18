@@ -49,7 +49,7 @@ export class BlogsRepository {
             }, {upsert: true}
         )
 
-        return !!res.upsertedCount;
+        return !!res.matchedCount;
     }
 
     static async deleteBlogById(id: string) {

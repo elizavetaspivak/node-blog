@@ -109,6 +109,7 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
     const isBlogUpdated = await blogs_repository_1.BlogsRepository.updateBlog(id, { name, description, websiteUrl });
     if (!isBlogUpdated) {
         res.sendStatus(404);
+        return;
     }
     res.sendStatus(204);
 });

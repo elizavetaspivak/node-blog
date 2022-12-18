@@ -144,6 +144,7 @@ blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, web
 
     if (!isBlogUpdated) {
         res.sendStatus(404)
+        return
     }
 
     res.sendStatus(204)

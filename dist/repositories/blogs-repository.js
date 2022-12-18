@@ -30,7 +30,7 @@ class BlogsRepository {
                 "websiteUrl": updatedData.websiteUrl
             }
         }, { upsert: true });
-        return !!res.upsertedCount;
+        return !!res.matchedCount;
     }
     static async deleteBlogById(id) {
         const res = await mongo_1.blogsCollections.deleteOne({ _id: new mongodb_1.ObjectId(id) });
