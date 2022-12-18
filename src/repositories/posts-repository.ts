@@ -1,4 +1,5 @@
-import {blogs, posts} from "./testing-repository";
+import { posts} from "./testing-repository";
+import {blogs} from "../routes/blog-route";
 
 type PostData = {
     title: string,
