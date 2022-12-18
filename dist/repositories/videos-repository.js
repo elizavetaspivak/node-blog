@@ -1,46 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideosRepository = void 0;
-const mongo_1 = require("../db/mongo");
-const mongodb_1 = require("mongodb");
+const testing_repository_1 = require("./testing-repository");
 class VideosRepository {
     static async getAllVideos() {
-        const videos = await mongo_1.videosCollections.find({}).toArray();
-        return videos.map((v) => ({
-            id: v._id,
-            title: v.title,
-            author: v.author,
-            canBeDownloaded: v.canBeDownloaded,
-            minAgeRestriction: v.minAgeRestriction,
-            createdAt: v.createdAt,
-            publicationDate: v.publicationDate,
-            availableResolutions: v.availableResolutions
-        }));
+        return testing_repository_1.videos;
     }
     static async getVideoById(id) {
-        const video = await mongo_1.videosCollections.findOne({ _id: new mongodb_1.ObjectId(id) });
-        return video;
+        return testing_repository_1.videos.find(v => v.id === +id);
     }
-    static async createVideo(videoData) {
-        const res = await mongo_1.videosCollections.insertOne(videoData);
-        return Object.assign({ id: res.insertedId }, videoData);
+    static createVideo(videoData) {
+        const newVideo = Object.assign(Object.assign({}, videoData), { id: testing_repository_1.videos.length + 1 });
+        testing_repository_1.videos.push(newVideo);
+        return newVideo;
     }
-    static async updateVideo(id, videoData) {
-        const res = await mongo_1.videosCollections.updateOne({ _id: new mongodb_1.ObjectId(id) }, {
-            $set: {
-                title: videoData.title,
-                author: videoData.author,
-                canBeDownloaded: videoData.canBeDownloaded,
-                minAgeRestriction: videoData.minAgeRestriction,
-                publicationDate: videoData.publicationDate,
-                availableResolutions: videoData.availableResolutions
-            }
-        }, { upsert: true });
-        return !!res.upsertedCount;
+    static updateVideo(id, videoData) {
+        let videoIndex = testing_repository_1.videos.findIndex(v => v.id === +id);
+        const video = testing_repository_1.videos.find(v => v.id === +id);
+        let newItem = Object.assign(Object.assign({}, video), videoData);
+        testing_repository_1.videos.splice(videoIndex, 1, newItem);
     }
-    static async deleteVideo(id) {
-        const res = await mongo_1.videosCollections.deleteOne({ _id: new mongodb_1.ObjectId(id) });
-        return !!res.deletedCount;
+    static deleteVideo(id) {
+        let videoIndex = testing_repository_1.videos.findIndex(v => v.id === +id);
+        testing_repository_1.videos.splice(videoIndex, 1);
     }
 }
 exports.VideosRepository = VideosRepository;

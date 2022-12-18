@@ -40,6 +40,7 @@ exports.posts = [
 class TestingRepository {
     static async deleteAllData() {
         await mongo_1.database.dropDatabase();
+        exports.videos = [];
     }
 }
 exports.TestingRepository = TestingRepository;
