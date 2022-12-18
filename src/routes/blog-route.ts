@@ -60,7 +60,7 @@ blogRoute.get('/:id', async (req, res) => {
     res.send(blogForClient)
 })
 
-blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
+blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const name = req.body.name
     const description = req.body.description
     const websiteUrl = req.body.websiteUrl
@@ -85,9 +85,15 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
         });
     }
 
-    const createdBlog = BlogsRepository.createBlog({name, description, websiteUrl})
 
-    res.status(201).json(createdBlog)
+    const createdBlogId = await BlogsRepository.createBlog({name, description, websiteUrl})
+
+    const createdBlogMapper = {
+        id: createdBlogId,
+        name, description, websiteUrl
+    }
+
+    res.status(201).json(createdBlogMapper)
 })
 
 blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
@@ -135,7 +141,7 @@ blogRoute.delete('/:id', authMiddleware, async (req, res) => {
         return;
     }
 
-   await BlogsRepository.deleteBlogById(id)
+    await BlogsRepository.deleteBlogById(id)
 
     res.sendStatus(204)
 })

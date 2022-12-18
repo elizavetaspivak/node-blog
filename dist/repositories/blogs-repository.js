@@ -19,7 +19,7 @@ class BlogsRepository {
     }
     static async createBlog(createdData) {
         const res = await mongo_1.blogsCollections.insertOne(createdData);
-        return Object.assign({ id: res.insertedId }, createdData);
+        return res.insertedId;
     }
     static async updateBlog(id, updatedData) {
         const res = await mongo_1.blogsCollections.updateOne({ _id: new mongodb_1.ObjectId(id) }, {

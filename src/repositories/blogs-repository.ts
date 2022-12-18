@@ -28,10 +28,7 @@ export class BlogsRepository {
     static async createBlog(createdData: CreatePostData) {
         const res = await blogsCollections.insertOne(createdData)
 
-        return {
-            id: res.insertedId,
-            ...createdData
-        }
+        return res.insertedId
     }
 
     static async updateBlog(id: string, updatedData: CreatePostData) {

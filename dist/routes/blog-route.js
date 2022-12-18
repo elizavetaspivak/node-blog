@@ -45,7 +45,7 @@ exports.blogRoute.get('/:id', async (req, res) => {
     };
     res.send(blogForClient);
 });
-exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
+exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const name = req.body.name;
     const description = req.body.description;
     const websiteUrl = req.body.websiteUrl;
@@ -65,8 +65,12 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
             errorsMessages: newErrors
         });
     }
-    const createdBlog = blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
-    res.status(201).json(createdBlog);
+    const createdBlogId = await blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
+    const createdBlogMapper = {
+        id: createdBlogId,
+        name, description, websiteUrl
+    };
+    res.status(201).json(createdBlogMapper);
 });
 exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const id = req.params.id;
