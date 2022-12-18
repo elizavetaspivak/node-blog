@@ -23,24 +23,35 @@ export type VideoType = {
 }
 
 
-videosRoute.get('/', (req, res) => {
-    const videos = VideosRepository.getAllVideos()
+videosRoute.get('/', async (req, res) => {
+    const videos = await VideosRepository.getAllVideos()
     res.send(videos)
 })
 
-videosRoute.get('/:id', (req, res) => {
+videosRoute.get('/:id', async (req, res) => {
     const id = +req.params.id
-    const video = VideosRepository.getVideoById(id)
+    const video = await VideosRepository.getVideoById(id)
 
     if (!video) {
         res.sendStatus(404)
         return
     }
 
-    res.status(200).json(video)
+    const videoForClient = {
+        id,
+        title: video.title,
+        author: video.author,
+        canBeDownloaded: video.canBeDownloaded,
+        minAgeRestriction: video.minAgeRestriction,
+        createdAt: video.createdAt,
+        publicationDate: video.publicationDate,
+        availableResolutions: video.availableResolutions
+    }
+
+    res.status(200).json(videoForClient)
 })
 
-videosRoute.post('/', titleValidator, authorValidator, availableResolutionsValidator, (req, res) => {
+videosRoute.post('/', titleValidator, authorValidator, availableResolutionsValidator, async (req, res) => {
     const title = req.body.title
     const author = req.body.author
     const availableResolutions = req.body.availableResolutions
@@ -62,7 +73,7 @@ videosRoute.post('/', titleValidator, authorValidator, availableResolutionsValid
 
     publicationDate.setDate(createdAt.getDate() + 1)
 
-    const video = VideosRepository.createVideo({
+    const video = await VideosRepository.createVideo({
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: createdAt.toISOString(),
@@ -76,7 +87,7 @@ videosRoute.post('/', titleValidator, authorValidator, availableResolutionsValid
 })
 
 videosRoute.put('/:id', titleValidator, authorValidator, availableResolutionsValidator,
-    minAgeRestrictionValidator, publicationDateValidator, canBeDownloadedValidator, (req, res) => {
+    minAgeRestrictionValidator, publicationDateValidator, canBeDownloadedValidator, async (req, res) => {
         const id = req.params!.id
 
         if (!id) {
@@ -103,7 +114,7 @@ videosRoute.put('/:id', titleValidator, authorValidator, availableResolutionsVal
             });
         }
 
-        let video = VideosRepository.getVideoById(+id)
+        let video = await VideosRepository.getVideoById(+id)
 
         if (!video) {
             res.sendStatus(404)
@@ -119,22 +130,22 @@ videosRoute.put('/:id', titleValidator, authorValidator, availableResolutionsVal
             availableResolutions
         }
 
-        VideosRepository.updateVideo(+id, newItem)
+        await VideosRepository.updateVideo(+id, newItem)
 
         res.sendStatus(204)
     })
 
-videosRoute.delete('/:id', (req, res) => {
+videosRoute.delete('/:id', async (req, res) => {
     const id = req.params.id
 
-    const video = VideosRepository.getVideoById(+id)
+    const video = await VideosRepository.getVideoById(+id)
 
     if (!video) {
         res.sendStatus(404)
         return;
     }
 
-    VideosRepository.deleteVideo(+id)
+    await VideosRepository.deleteVideo(+id)
 
     res.sendStatus(204)
 })

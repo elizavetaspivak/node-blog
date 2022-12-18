@@ -36,21 +36,28 @@ const websiteUrlValidation = body('websiteUrl').isLength({
 
 export const blogRoute = Router({})
 
-blogRoute.get('/', (req, res) => {
-    const bloggers = BlogsRepository.getAllBlogs()
+blogRoute.get('/', async (req, res) => {
+    const bloggers = await BlogsRepository.getAllBlogs()
     res.status(200).json(bloggers)
 })
 
-blogRoute.get('/:id', (req, res) => {
+blogRoute.get('/:id', async (req, res) => {
     const id = req.params.id
 
-    const blog = BlogsRepository.getBlogById(id)
+    const blog = await BlogsRepository.getBlogById(id)
 
     if (!blog) {
         return res.sendStatus(404)
     }
 
-    res.send(blog)
+    const blogForClient = {
+        id: blog._id,
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl
+    }
+
+    res.send(blogForClient)
 })
 
 blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
@@ -83,7 +90,7 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
     res.status(201).json(createdBlog)
 })
 
-blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
+blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const id = req.params.id
     const name = req.body.name
     const description = req.body.description
@@ -109,7 +116,7 @@ blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, web
         });
     }
 
-    const isBlogUpdated = BlogsRepository.updateBlog(id, {name, description, websiteUrl})
+    const isBlogUpdated = await BlogsRepository.updateBlog(id, {name, description, websiteUrl})
 
     if (!isBlogUpdated) {
         res.sendStatus(404)
@@ -118,7 +125,7 @@ blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, web
     res.sendStatus(204)
 })
 
-blogRoute.delete('/:id', authMiddleware, (req, res) => {
+blogRoute.delete('/:id', authMiddleware, async (req, res) => {
     const id = req.params!.id
 
     const blog = BlogsRepository.getBlogById(id)
@@ -128,13 +135,7 @@ blogRoute.delete('/:id', authMiddleware, (req, res) => {
         return;
     }
 
-    const filteredBloggers = BlogsRepository.deleteBlogById(id)
-
-    if (filteredBloggers.length === blogs.length) {
-        return res.sendStatus(404);
-    }
-
-    blogs = filteredBloggers;
+   await BlogsRepository.deleteBlogById(id)
 
     res.sendStatus(204)
 })

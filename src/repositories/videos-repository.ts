@@ -1,4 +1,6 @@
 import {AvailableResolutions, videos} from "./testing-repository";
+import {blogsCollections, videosCollections} from "../db/mongo";
+import {ObjectId} from "mongodb";
 
 export type CreateVideoType = {
     title: string,
@@ -20,38 +22,56 @@ export type UpdateVideoType = {
 }
 
 export class VideosRepository {
-    static getAllVideos() {
-        return videos
+    static async getAllVideos() {
+        const videos = await videosCollections.find({}).toArray()
+
+        return videos.map((v: any) => ({
+            id: v._id,
+            title: v.title,
+            author: v.author,
+            canBeDownloaded: v.canBeDownloaded,
+            minAgeRestriction: v.minAgeRestriction,
+            createdAt: v.createdAt,
+            publicationDate: v.publicationDate,
+            availableResolutions: v.availableResolutions
+        }))
     }
 
-    static getVideoById(id: number) {
-        return videos.find(v => v.id === +id)
+    static async getVideoById(id: number) {
+        const video = await videosCollections.findOne({_id: new ObjectId(id)})
+
+        return video
     }
 
-    static createVideo(videoData: CreateVideoType) {
-        const newVideo = {
-            ...videoData,
-            id: videos.length + 1,
-        }
-        videos.push(newVideo)
-        return newVideo
-    }
+    static async createVideo(videoData: CreateVideoType) {
+        const res = await videosCollections.insertOne(videoData)
 
-    static updateVideo(id: number, videoData: UpdateVideoType) {
-        let videoIndex = videos.findIndex(v => v.id === +id)
-        const video = videos.find(v => v.id === +id)
-
-        let newItem = {
-            ...video!,
+        return {
+            id: res.insertedId,
             ...videoData
         }
 
-        videos.splice(videoIndex, 1, newItem)
     }
 
-    static deleteVideo (id: number){
-        let videoIndex = videos.findIndex(v => v.id === +id)
+    static async updateVideo(id: number, videoData: UpdateVideoType) {
+        const res = await videosCollections.updateOne({_id: new ObjectId(id)}, {
+                $set: {
+                    title: videoData.title,
+                    author: videoData.author,
+                    canBeDownloaded: videoData.canBeDownloaded,
+                    minAgeRestriction: videoData.minAgeRestriction,
+                    publicationDate: videoData.publicationDate,
+                    availableResolutions: videoData.availableResolutions
+                }
+            }, {upsert: true}
+        )
 
-        videos.splice(videoIndex, 1)
+        return !!res.upsertedCount;
+    }
+
+    static async deleteVideo(id: number) {
+        const res = await videosCollections.deleteOne({_id: new ObjectId(id)})
+
+        return !!res.deletedCount
     }
 }

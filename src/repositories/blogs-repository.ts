@@ -1,5 +1,5 @@
-import {blogs} from "../routes/blog-route";
-import {v4} from "uuid";
+import {blogsCollections} from "../db/mongo";
+import {ObjectId} from "mongodb";
 
 type CreatePostData = {
     name: string
@@ -8,40 +8,48 @@ type CreatePostData = {
 }
 
 export class BlogsRepository {
-    static getAllBlogs() {
-        return blogs
+    static async getAllBlogs() {
+        const blogs = await blogsCollections.find({}).toArray();
+
+        return blogs.map((b: any) => ({
+            id: b._id,
+            name: b.name,
+            description: b.description,
+            websiteUrl: b.websiteUrl
+        }))
     }
 
-    static getBlogById(id: string) {
-        return blogs.find(b => b.id === id)
+    static async getBlogById(id: string) {
+        const blog = await blogsCollections.findOne({_id: new ObjectId(id)});
+
+        return blog
     }
 
-    static createBlog(createdData: CreatePostData) {
-        const newBlog = {
-            id: v4(),
+    static async createBlog(createdData: CreatePostData) {
+        const res = await blogsCollections.insertOne(createdData)
+
+        return {
+            id: res.insertedId,
             ...createdData
         }
-
-        blogs.push(newBlog)
-
-        return newBlog
     }
 
-    static updateBlog(id: string, updatedData: CreatePostData) {
-        let blogsIndex = blogs.findIndex(v => v.id === id)
-        const blog = blogs.find(v => v.id === id)
+    static async updateBlog(id: string, updatedData: CreatePostData) {
+        const res = await blogsCollections.updateOne({_id: new ObjectId(id)}, {
+                $set: {
+                    "name": updatedData.name,
+                    "description": updatedData.description,
+                    "websiteUrl": updatedData.websiteUrl
+                }
+            }, {upsert: true}
+        )
 
-        let newItem = {
-            ...blog!,
-            ...updatedData
-        }
-
-        blogs.splice(blogsIndex, 1, newItem)
-
-        return !!blog;
+        return !!res.upsertedCount;
     }
 
-    static deleteBlogById(id: string) {
-        return blogs.filter(el => el.id !== id);
+    static async deleteBlogById(id: string) {
+        const res = await blogsCollections.deleteOne({_id: new ObjectId(id)})
+
+        return !!res.deletedCount
     }
 }

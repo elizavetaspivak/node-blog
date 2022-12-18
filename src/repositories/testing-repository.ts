@@ -1,6 +1,7 @@
 import {VideoType} from "../routes/videos-route";
 import {blogs, BlogType} from "../routes/blog-route";
 import {PostType} from "../routes/post-route";
+import {database} from "../db/mongo";
 
 export enum AvailableResolutions {
     P144 = 'P144',
@@ -40,9 +41,7 @@ export let posts: PostType[] = [
 ]
 
 export class TestingRepository {
-    static deleteAllData() {
-        videos = []
-        blogs.splice(1)
-        posts = []
+    static async deleteAllData() {
+        await database.dropDatabase()
     }
 }

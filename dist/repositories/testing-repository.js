@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestingRepository = exports.posts = exports.videos = exports.AvailableResolutions = void 0;
-const blog_route_1 = require("../routes/blog-route");
+const mongo_1 = require("../db/mongo");
 var AvailableResolutions;
 (function (AvailableResolutions) {
     AvailableResolutions["P144"] = "P144";
@@ -38,10 +38,8 @@ exports.posts = [
     }
 ];
 class TestingRepository {
-    static deleteAllData() {
-        exports.videos = [];
-        blog_route_1.blogs.splice(1);
-        exports.posts = [];
+    static async deleteAllData() {
+        await mongo_1.database.dropDatabase();
     }
 }
 exports.TestingRepository = TestingRepository;

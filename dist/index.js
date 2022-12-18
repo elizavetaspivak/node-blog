@@ -9,6 +9,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const delete_all_data_route_1 = require("./routes/delete-all-data-route");
 const blog_route_1 = require("./routes/blog-route");
 const post_route_1 = require("./routes/post-route");
+const mongo_1 = require("./db/mongo");
 const app = (0, express_1.default)();
 const port = 3000;
 const parserMiddleware = (0, body_parser_1.default)({});
@@ -17,6 +18,14 @@ app.use('/videos', videos_route_1.videosRoute);
 app.use('/testing/all-data', delete_all_data_route_1.deleteAllDataRoute);
 app.use('/blogs', blog_route_1.blogRoute);
 app.use('/posts', post_route_1.postRoute);
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+app.listen(port, async () => {
+    try {
+        await mongo_1.client.connect();
+        console.log(`Client connected to DB`);
+        console.log(`Example app listening on port ${port}`);
+    }
+    catch (err) {
+        console.log(`${err}`);
+        await mongo_1.client.close();
+    }
 });

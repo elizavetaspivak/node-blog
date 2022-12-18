@@ -27,17 +27,23 @@ const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl').isLengt
     max: 100
 }).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$');
 exports.blogRoute = (0, express_1.Router)({});
-exports.blogRoute.get('/', (req, res) => {
-    const bloggers = blogs_repository_1.BlogsRepository.getAllBlogs();
+exports.blogRoute.get('/', async (req, res) => {
+    const bloggers = await blogs_repository_1.BlogsRepository.getAllBlogs();
     res.status(200).json(bloggers);
 });
-exports.blogRoute.get('/:id', (req, res) => {
+exports.blogRoute.get('/:id', async (req, res) => {
     const id = req.params.id;
-    const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
+    const blog = await blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blog) {
         return res.sendStatus(404);
     }
-    res.send(blog);
+    const blogForClient = {
+        id: blog._id,
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl
+    };
+    res.send(blogForClient);
 });
 exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
     const name = req.body.name;
@@ -62,7 +68,7 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
     const createdBlog = blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
     res.status(201).json(createdBlog);
 });
-exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
+exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const id = req.params.id;
     const name = req.body.name;
     const description = req.body.description;
@@ -83,23 +89,19 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
             errorsMessages: newErrors
         });
     }
-    const isBlogUpdated = blogs_repository_1.BlogsRepository.updateBlog(id, { name, description, websiteUrl });
+    const isBlogUpdated = await blogs_repository_1.BlogsRepository.updateBlog(id, { name, description, websiteUrl });
     if (!isBlogUpdated) {
         res.sendStatus(404);
     }
     res.sendStatus(204);
 });
-exports.blogRoute.delete('/:id', exports.authMiddleware, (req, res) => {
+exports.blogRoute.delete('/:id', exports.authMiddleware, async (req, res) => {
     const id = req.params.id;
     const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blog) {
         res.sendStatus(404);
         return;
     }
-    const filteredBloggers = blogs_repository_1.BlogsRepository.deleteBlogById(id);
-    if (filteredBloggers.length === exports.blogs.length) {
-        return res.sendStatus(404);
-    }
-    exports.blogs = filteredBloggers;
+    await blogs_repository_1.BlogsRepository.deleteBlogById(id);
     res.sendStatus(204);
 });
