@@ -44,6 +44,10 @@ blogRoute.get('/', async (req, res) => {
 blogRoute.get('/:id', async (req, res) => {
     const id = req.params.id
 
+    if (!id) {
+        return res.sendStatus(404)
+    }
+
     const blog = await BlogsRepository.getBlogById(id)
 
     if (!blog) {
@@ -100,6 +104,11 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
 
 blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const id = req.params.id
+
+    if (!id) {
+        return res.sendStatus(404)
+    }
+
     const name = req.body.name
     const description = req.body.description
     const websiteUrl = req.body.websiteUrl
@@ -135,6 +144,10 @@ blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, web
 
 blogRoute.delete('/:id', authMiddleware, async (req, res) => {
     const id = req.params!.id
+
+    if (!id) {
+        return res.sendStatus(404)
+    }
 
     const blog = BlogsRepository.getBlogById(id)
 
