@@ -1,4 +1,4 @@
-import {blogs} from "./testing-repository";
+import {blogs} from "../routes/blog-route";
 
 type CreatePostData = {
     name: string
