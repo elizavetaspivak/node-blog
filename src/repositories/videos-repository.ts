@@ -1,6 +1,4 @@
 import {AvailableResolutions, videos} from "./testing-repository";
-import {blogsCollections, videosCollections} from "../db/mongo";
-import {ObjectId} from "mongodb";
 
 export type CreateVideoType = {
     title: string,
@@ -23,55 +21,37 @@ export type UpdateVideoType = {
 
 export class VideosRepository {
     static async getAllVideos() {
-        const videos = await videosCollections.find({}).toArray()
-
-        return videos.map((v: any) => ({
-            id: v._id,
-            title: v.title,
-            author: v.author,
-            canBeDownloaded: v.canBeDownloaded,
-            minAgeRestriction: v.minAgeRestriction,
-            createdAt: v.createdAt,
-            publicationDate: v.publicationDate,
-            availableResolutions: v.availableResolutions
-        }))
+        return videos
     }
 
-    static async getVideoById(id: string) {
-        const video = await videosCollections.findOne({_id: new ObjectId(id)})
-
-        return video
+    static async getVideoById(id: number) {
+        return videos.find(v => v.id === +id)
     }
 
-    static async createVideo(videoData: CreateVideoType) {
-        const res = await videosCollections.insertOne(videoData)
+    static createVideo(videoData: CreateVideoType) {
+        const newVideo = {
+            ...videoData,
+            id: videos.length + 1,
+        }
+        videos.push(newVideo)
+        return newVideo
+    }
 
-        return {
-            id: res.insertedId,
+    static updateVideo(id: number, videoData: UpdateVideoType) {
+        let videoIndex = videos.findIndex(v => v.id === +id)
+        const video = videos.find(v => v.id === +id)
+
+        let newItem = {
+            ...video!,
             ...videoData
         }
 
+        videos.splice(videoIndex, 1, newItem)
     }
 
-    static async updateVideo(id: string, videoData: UpdateVideoType) {
-        const res = await videosCollections.updateOne({_id: new ObjectId(id)}, {
-                $set: {
-                    title: videoData.title,
-                    author: videoData.author,
-                    canBeDownloaded: videoData.canBeDownloaded,
-                    minAgeRestriction: videoData.minAgeRestriction,
-                    publicationDate: videoData.publicationDate,
-                    availableResolutions: videoData.availableResolutions
-                }
-            }, {upsert: true}
-        )
+    static deleteVideo(id: number) {
+        let videoIndex = videos.findIndex(v => v.id === +id)
 
-        return !!res.upsertedCount;
-    }
-
-    static async deleteVideo(id: string) {
-        const res = await videosCollections.deleteOne({_id: new ObjectId(id)})
-
-        return !!res.deletedCount
+        videos.splice(videoIndex, 1)
     }
 }

@@ -12,4 +12,3 @@ export const database = client.db('blogs')
 
 export const blogsCollections = database.collection('blogs')
 export const postsCollections = database.collection('posts')
-export const videosCollections = database.collection('videos')

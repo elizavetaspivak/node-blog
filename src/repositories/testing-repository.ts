@@ -1,5 +1,4 @@
 import {VideoType} from "../routes/videos-route";
-import {blogs, BlogType} from "../routes/blog-route";
 import {PostType} from "../routes/post-route";
 import {database} from "../db/mongo";
 
@@ -43,5 +42,6 @@ export let posts: PostType[] = [
 export class TestingRepository {
     static async deleteAllData() {
         await database.dropDatabase()
+        videos = []
     }
 }
