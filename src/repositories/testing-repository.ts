@@ -1,5 +1,5 @@
 import {VideoType} from "../routes/videos-route";
-import {BlogType} from "../routes/blog-route";
+import {blogs, BlogType} from "../routes/blog-route";
 import {PostType} from "../routes/post-route";
 
 export enum AvailableResolutions {
@@ -28,15 +28,6 @@ export let videos: VideoType[] = [
     }
 ]
 
-export let blogs: BlogType[] = [
-    {
-        id: "fdsfdsfsd",
-        name: "fsdf",
-        description: "fdsfsd",
-        websiteUrl: "fsdfds"
-    }
-]
-
 export let posts: PostType[] = [
     {
         id: "fsdyuifye",
@@ -51,7 +42,7 @@ export let posts: PostType[] = [
 export class TestingRepository {
     static deleteAllData() {
         videos = []
-        blogs = []
+        blogs.splice(1)
         posts = []
     }
 }

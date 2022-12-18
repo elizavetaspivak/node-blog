@@ -1,9 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogRoute = exports.authMiddleware = void 0;
+exports.blogRoute = exports.authMiddleware = exports.blogs = void 0;
 const express_1 = require("express");
 const blogs_repository_1 = require("../repositories/blogs-repository");
 const express_validator_1 = require("express-validator");
+exports.blogs = [
+    {
+        id: "fdsfdsfsd",
+        name: "fsdf",
+        description: "fdsfsd",
+        websiteUrl: "fsdfds"
+    }
+];
 const authMiddleware = (req, res, next) => {
     if (req.headers['authorization'] !== 'Basic YWRtaW46cXdlcnR5') {
         res.sendStatus(401);
@@ -25,14 +33,9 @@ exports.blogRoute.get('/', (req, res) => {
 });
 exports.blogRoute.get('/:id', (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.sendStatus(404);
-        return;
-    }
     const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blog) {
-        res.sendStatus(404);
-        return;
+        return res.sendStatus(404);
     }
     res.send(blog);
 });
@@ -88,14 +91,15 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
 });
 exports.blogRoute.delete('/:id', exports.authMiddleware, (req, res) => {
     const id = req.params.id;
-    if (!id) {
-        res.sendStatus(404);
-    }
     const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blog) {
         res.sendStatus(404);
         return;
     }
-    blogs_repository_1.BlogsRepository.deleteBlogById(id);
+    const filteredBloggers = blogs_repository_1.BlogsRepository.deleteBlogById(id);
+    if (filteredBloggers.length === exports.blogs.length) {
+        return res.sendStatus(404);
+    }
+    exports.blogs = filteredBloggers;
     res.sendStatus(204);
 });

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TestingRepository = exports.posts = exports.blogs = exports.videos = exports.AvailableResolutions = void 0;
+exports.TestingRepository = exports.posts = exports.videos = exports.AvailableResolutions = void 0;
+const blog_route_1 = require("../routes/blog-route");
 var AvailableResolutions;
 (function (AvailableResolutions) {
     AvailableResolutions["P144"] = "P144";
@@ -26,14 +27,6 @@ exports.videos = [
         ]
     }
 ];
-exports.blogs = [
-    {
-        id: "fdsfdsfsd",
-        name: "fsdf",
-        description: "fdsfsd",
-        websiteUrl: "fsdfds"
-    }
-];
 exports.posts = [
     {
         id: "fsdyuifye",
@@ -47,7 +40,7 @@ exports.posts = [
 class TestingRepository {
     static deleteAllData() {
         exports.videos = [];
-        exports.blogs = [];
+        blog_route_1.blogs.splice(1);
         exports.posts = [];
     }
 }

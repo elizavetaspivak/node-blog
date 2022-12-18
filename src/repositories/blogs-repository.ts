@@ -1,4 +1,4 @@
-import {blogs, videos} from "./testing-repository";
+import {blogs} from "./testing-repository";
 
 type CreatePostData = {
     name: string
@@ -12,13 +12,7 @@ export class BlogsRepository {
     }
 
     static getBlogById(id: string) {
-        const foundedBlogs = blogs.find(b => b.id === id)
-
-        if (foundedBlogs) {
-            return foundedBlogs
-        } else {
-            return false
-        }
+        return blogs.find(b => b.id === id)
     }
 
     static createBlog(createdData: CreatePostData) {
@@ -47,8 +41,6 @@ export class BlogsRepository {
     }
 
     static deleteBlogById(id: string) {
-        let blogIndex = blogs.findIndex(v => v.id === id)
-
-        blogs.splice(blogIndex, 1)
+        return blogs.filter(el => el.id !== id);
     }
 }

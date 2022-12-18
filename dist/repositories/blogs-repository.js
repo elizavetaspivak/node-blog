@@ -7,13 +7,7 @@ class BlogsRepository {
         return testing_repository_1.blogs;
     }
     static getBlogById(id) {
-        const foundedBlogs = testing_repository_1.blogs.find(b => b.id === id);
-        if (foundedBlogs) {
-            return foundedBlogs;
-        }
-        else {
-            return false;
-        }
+        return testing_repository_1.blogs.find(b => b.id === id);
     }
     static createBlog(createdData) {
         const newBlog = Object.assign({ id: new Date().getDate().toString() }, createdData);
@@ -28,10 +22,7 @@ class BlogsRepository {
         return !!blog;
     }
     static deleteBlogById(id) {
-        let blogIndex = testing_repository_1.blogs.findIndex(v => v.id === id);
-        const blog = testing_repository_1.blogs.find(v => v.id === id);
-        testing_repository_1.blogs.splice(blogIndex, 1);
-        return !!blog;
+        return testing_repository_1.blogs.filter(el => el.id !== id);
     }
 }
 exports.BlogsRepository = BlogsRepository;

@@ -2,6 +2,15 @@ import {NextFunction, Request, Response, Router} from "express";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {body, validationResult} from "express-validator";
 
+export let blogs: BlogType[] = [
+    {
+        id: "fdsfdsfsd",
+        name: "fsdf",
+        description: "fdsfsd",
+        websiteUrl: "fsdfds"
+    }
+]
+
 export type BlogType = {
     id: string,
     name: string,
@@ -35,16 +44,10 @@ blogRoute.get('/', (req, res) => {
 blogRoute.get('/:id', (req, res) => {
     const id = req.params.id
 
-    if (!id) {
-        res.sendStatus(404)
-        return;
-    }
-
     const blog = BlogsRepository.getBlogById(id)
 
     if (!blog) {
-        res.sendStatus(404)
-        return
+        return res.sendStatus(404)
     }
 
     res.send(blog)
@@ -118,10 +121,6 @@ blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, web
 blogRoute.delete('/:id', authMiddleware, (req, res) => {
     const id = req.params!.id
 
-    if (!id) {
-        res.sendStatus(404)
-    }
-
     const blog = BlogsRepository.getBlogById(id)
 
     if (!blog) {
@@ -129,7 +128,13 @@ blogRoute.delete('/:id', authMiddleware, (req, res) => {
         return;
     }
 
-    BlogsRepository.deleteBlogById(id)
+    const filteredBloggers = BlogsRepository.deleteBlogById(id)
+
+    if (filteredBloggers.length === blogs.length) {
+        return res.sendStatus(404);
+    }
+
+    blogs = filteredBloggers;
 
     res.sendStatus(204)
 })
