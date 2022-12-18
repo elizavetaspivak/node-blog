@@ -18,12 +18,12 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     next()
 }
 
-const nameValidation = body('name').isLength({min: 1, max: 15}).withMessage('Incorrect name')
+const nameValidation = body('name').trim().isLength({min: 1, max: 15}).withMessage('Incorrect name')
 const descriptionValidation = body('description').isLength({min: 1, max: 500}).withMessage('Incorrect description')
 const websiteUrlValidation = body('websiteUrl').isLength({
     min: 1,
     max: 100
-}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$').withMessage('Incorrect description')
+}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$').withMessage('Incorrect websiteUrl')
 
 export const blogRoute = Router({})
 

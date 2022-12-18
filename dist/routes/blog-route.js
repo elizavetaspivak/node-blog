@@ -12,12 +12,12 @@ const authMiddleware = (req, res, next) => {
     next();
 };
 exports.authMiddleware = authMiddleware;
-const nameValidation = (0, express_validator_1.body)('name').isLength({ min: 1, max: 15 }).withMessage('Incorrect name');
+const nameValidation = (0, express_validator_1.body)('name').trim().isLength({ min: 1, max: 15 }).withMessage('Incorrect name');
 const descriptionValidation = (0, express_validator_1.body)('description').isLength({ min: 1, max: 500 }).withMessage('Incorrect description');
 const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl').isLength({
     min: 1,
     max: 100
-}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$').withMessage('Incorrect description');
+}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$').withMessage('Incorrect websiteUrl');
 exports.blogRoute = (0, express_1.Router)({});
 exports.blogRoute.get('/', (req, res) => {
     const blogs = blogs_repository_1.BlogsRepository.getAllBlogs();
@@ -46,7 +46,7 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
         });
     }
     const createdBlog = blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
-    res.send(createdBlog);
+    res.status(201).json(createdBlog);
 });
 exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
     const id = req.params.id;
