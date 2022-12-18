@@ -23,7 +23,7 @@ const descriptionValidation = body('description').isLength({min: 1, max: 500}).w
 const websiteUrlValidation = body('websiteUrl').isLength({
     min: 1,
     max: 100
-}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$').withMessage('Incorrect websiteUrl')
+}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$')
 
 export const blogRoute = Router({})
 
