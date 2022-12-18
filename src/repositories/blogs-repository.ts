@@ -48,10 +48,7 @@ export class BlogsRepository {
 
     static deleteBlogById(id: string) {
         let blogIndex = blogs.findIndex(v => v.id === id)
-        const blog = blogs.find(v => v.id === id)
 
         blogs.splice(blogIndex, 1)
-
-        return !!blog;
     }
 }
