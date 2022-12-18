@@ -46,7 +46,7 @@ postRoute.get('/:id', (req, res) => {
 
     const foundedPost = PostsRepository.getPostById(id)
 
-    if (!foundedPost) {
+    if (!foundedPost || !id) {
         res.sendStatus(404)
     }
 
@@ -109,7 +109,7 @@ postRoute.delete('/:id', authMiddleware, (req, res) => {
 
     const post = PostsRepository.deletePostById(id)
 
-    if (!post) {
+    if (!post || !id) {
         res.sendStatus(404)
         return
     }
