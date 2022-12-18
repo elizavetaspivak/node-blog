@@ -44,9 +44,14 @@ postRoute.get('/', (req, res) => {
 postRoute.get('/:id', (req, res) => {
     const id = req.params.id
 
+    if (!id) {
+        res.sendStatus(404)
+        return
+    }
+
     const foundedPost = PostsRepository.getPostById(id)
 
-    if (!foundedPost || !id) {
+    if (!foundedPost) {
         res.sendStatus(404)
     }
 

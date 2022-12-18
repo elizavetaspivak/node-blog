@@ -35,6 +35,11 @@ blogRoute.get('/', (req, res) => {
 blogRoute.get('/:id', (req, res) => {
     const id = req.params.id
 
+    if (!id) {
+        res.sendStatus(404)
+        return;
+    }
+
     const blogs = BlogsRepository.getBlogById(id)
 
     if (!blogs) {

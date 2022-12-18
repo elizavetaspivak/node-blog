@@ -29,6 +29,10 @@ exports.postRoute.get('/', (req, res) => {
 });
 exports.postRoute.get('/:id', (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        res.sendStatus(404);
+        return;
+    }
     const foundedPost = posts_repository_1.PostsRepository.getPostById(id);
     if (!foundedPost) {
         res.sendStatus(404);
@@ -76,7 +80,7 @@ exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shor
 exports.postRoute.delete('/:id', blog_route_1.authMiddleware, (req, res) => {
     const id = req.params.id;
     const post = posts_repository_1.PostsRepository.deletePostById(id);
-    if (!post) {
+    if (!post || !id) {
         res.sendStatus(404);
         return;
     }
