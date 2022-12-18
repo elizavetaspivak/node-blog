@@ -37,7 +37,7 @@ export class VideosRepository {
         }))
     }
 
-    static async getVideoById(id: number) {
+    static async getVideoById(id: string) {
         const video = await videosCollections.findOne({_id: new ObjectId(id)})
 
         return video
@@ -53,7 +53,7 @@ export class VideosRepository {
 
     }
 
-    static async updateVideo(id: number, videoData: UpdateVideoType) {
+    static async updateVideo(id: string, videoData: UpdateVideoType) {
         const res = await videosCollections.updateOne({_id: new ObjectId(id)}, {
                 $set: {
                     title: videoData.title,
@@ -69,7 +69,7 @@ export class VideosRepository {
         return !!res.upsertedCount;
     }
 
-    static async deleteVideo(id: number) {
+    static async deleteVideo(id: string) {
         const res = await videosCollections.deleteOne({_id: new ObjectId(id)})
 
         return !!res.deletedCount

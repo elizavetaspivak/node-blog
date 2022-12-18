@@ -29,7 +29,7 @@ videosRoute.get('/', async (req, res) => {
 })
 
 videosRoute.get('/:id', async (req, res) => {
-    const id = +req.params.id
+    const id = req.params.id
     const video = await VideosRepository.getVideoById(id)
 
     if (!video) {
@@ -114,7 +114,7 @@ videosRoute.put('/:id', titleValidator, authorValidator, availableResolutionsVal
             });
         }
 
-        let video = await VideosRepository.getVideoById(+id)
+        let video = await VideosRepository.getVideoById(id)
 
         if (!video) {
             res.sendStatus(404)
@@ -138,14 +138,14 @@ videosRoute.put('/:id', titleValidator, authorValidator, availableResolutionsVal
 videosRoute.delete('/:id', async (req, res) => {
     const id = req.params.id
 
-    const video = await VideosRepository.getVideoById(+id)
+    const video = await VideosRepository.getVideoById(id)
 
     if (!video) {
         res.sendStatus(404)
         return;
     }
 
-    await VideosRepository.deleteVideo(+id)
+    await VideosRepository.deleteVideo(id)
 
     res.sendStatus(204)
 })
