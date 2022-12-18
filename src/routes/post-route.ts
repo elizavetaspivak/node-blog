@@ -1,6 +1,5 @@
 import {Router} from "express";
-import {BlogsRepository} from "../repositories/blogs-repository";
-import {authMiddleware, blogRoute} from "./blog-route";
+import {authMiddleware} from "./blog-route";
 import {PostsRepository} from "../repositories/posts-repository";
 import {body, validationResult} from "express-validator";
 import {blogs} from "../repositories/testing-repository";
@@ -74,7 +73,7 @@ postRoute.post('/', authMiddleware, titleValidation, shortDescriptionValidation,
 
     const createdPost = PostsRepository.createPost({title, shortDescription, content, blogId})
 
-    res.send(createdPost)
+    res.status(201).json(createdPost)
 })
 
 postRoute.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {

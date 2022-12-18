@@ -15,7 +15,7 @@ class PostsRepository {
             return false;
         }
     }
-    static createPost(id, postData) {
+    static createPost(postData) {
         const blog = testing_repository_1.blogs.find(b => b.id === postData.blogId);
         const newPost = Object.assign({ id: new Date().getDate().toString(), blogName: blog.name }, postData);
         testing_repository_1.posts.push(newPost);

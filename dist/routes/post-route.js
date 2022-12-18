@@ -35,8 +35,7 @@ exports.postRoute.get('/:id', (req, res) => {
     }
     res.send(foundedPost);
 });
-exports.postRoute.post('/:id', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
-    const id = req.params.id;
+exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
@@ -50,8 +49,8 @@ exports.postRoute.post('/:id', blog_route_1.authMiddleware, titleValidation, sho
             }))
         });
     }
-    const createdPost = posts_repository_1.PostsRepository.createPost(id, { title, shortDescription, content, blogId });
-    res.send(createdPost);
+    const createdPost = posts_repository_1.PostsRepository.createPost({ title, shortDescription, content, blogId });
+    res.status(201).json(createdPost);
 });
 exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
     const id = req.params.id;
