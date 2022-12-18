@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response, Router} from "express";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {body, validationResult} from "express-validator";
+import {PostsRepository} from "../repositories/posts-repository";
 
 export type BlogType = {
     id: string,
@@ -122,12 +123,14 @@ blogRoute.delete('/:id', authMiddleware, (req, res) => {
         res.sendStatus(404)
     }
 
-    const blogs = BlogsRepository.deleteBlogById(id)
+    const blog = BlogsRepository.getBlogById(id)
 
-    if (!blogs) {
+    if (!blog) {
         res.sendStatus(404)
-        return
+        return;
     }
+
+    BlogsRepository.deleteBlogById(id)
 
     res.sendStatus(204)
 })

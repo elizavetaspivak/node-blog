@@ -82,10 +82,11 @@ exports.postRoute.delete('/:id', blog_route_1.authMiddleware, (req, res) => {
     if (!id) {
         res.sendStatus(404);
     }
-    const post = posts_repository_1.PostsRepository.deletePostById(id);
+    const post = posts_repository_1.PostsRepository.getPostById(id);
     if (!post) {
         res.sendStatus(404);
         return;
     }
+    posts_repository_1.PostsRepository.deletePostById(id);
     res.sendStatus(204);
 });

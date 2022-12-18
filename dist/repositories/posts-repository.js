@@ -30,9 +30,7 @@ class PostsRepository {
     }
     static deletePostById(id) {
         let postIndex = testing_repository_1.posts.findIndex(v => v.id === id);
-        const post = testing_repository_1.posts.find(v => v.id === id);
         testing_repository_1.posts.splice(postIndex, 1);
-        return !!post;
     }
 }
 exports.PostsRepository = PostsRepository;
