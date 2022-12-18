@@ -54,11 +54,12 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
 
     if (!errors.isEmpty()) {
         const err = errors.array()
+        const errForClient = new Set(err.map(er => ({
+            message: er.msg, field:
+            er.param
+        })))
         return res.status(400).json({
-            errorsMessages: err.map(er => ({
-                message: er.msg, field:
-                er.param
-            }))
+            errorsMessages: errForClient
         });
     }
 

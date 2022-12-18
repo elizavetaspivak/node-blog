@@ -17,7 +17,7 @@ const descriptionValidation = (0, express_validator_1.body)('description').isLen
 const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl').isLength({
     min: 1,
     max: 100
-}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$').withMessage('Incorrect websiteUrl');
+}).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$');
 exports.blogRoute = (0, express_1.Router)({});
 exports.blogRoute.get('/', (req, res) => {
     const blogs = blogs_repository_1.BlogsRepository.getAllBlogs();
@@ -39,10 +39,11 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const err = errors.array();
+        const errForClient = new Set(err.map(er => ({
+            message: er.msg, field: er.param
+        })));
         return res.status(400).json({
-            errorsMessages: err.map(er => ({
-                message: er.msg, field: er.param
-            }))
+            errorsMessages: errForClient
         });
     }
     const createdBlog = blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
