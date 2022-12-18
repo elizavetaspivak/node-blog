@@ -37,8 +37,8 @@ const websiteUrlValidation = body('websiteUrl').isLength({
 export const blogRoute = Router({})
 
 blogRoute.get('/', (req, res) => {
-    const blogs = BlogsRepository.getAllBlogs()
-    res.send(blogs)
+    const bloggers = BlogsRepository.getAllBlogs()
+    res.status(200).json(bloggers)
 })
 
 blogRoute.get('/:id', (req, res) => {

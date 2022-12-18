@@ -28,8 +28,8 @@ const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl').isLengt
 }).matches('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$');
 exports.blogRoute = (0, express_1.Router)({});
 exports.blogRoute.get('/', (req, res) => {
-    const blogs = blogs_repository_1.BlogsRepository.getAllBlogs();
-    res.send(blogs);
+    const bloggers = blogs_repository_1.BlogsRepository.getAllBlogs();
+    res.status(200).json(bloggers);
 });
 exports.blogRoute.get('/:id', (req, res) => {
     const id = req.params.id;
