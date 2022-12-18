@@ -39,11 +39,17 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const err = errors.array();
-        const errForClient = new Set(err.map(er => ({
-            message: er.msg, field: er.param
-        })));
+        let newErrors = [];
+        err.forEach(error => {
+            let found = newErrors.filter(errItem => error.param === errItem.field).length;
+            if (!found) {
+                newErrors.push({
+                    message: error.msg, field: error.param
+                });
+            }
+        });
         return res.status(400).json({
-            errorsMessages: errForClient
+            errorsMessages: newErrors
         });
     }
     const createdBlog = blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
@@ -57,10 +63,17 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const err = errors.array();
+        let newErrors = [];
+        err.forEach(error => {
+            let found = newErrors.filter(errItem => error.param === errItem.field).length;
+            if (!found) {
+                newErrors.push({
+                    message: error.msg, field: error.param
+                });
+            }
+        });
         return res.status(400).json({
-            errorsMessages: err.map(er => ({
-                message: er.msg, field: er.param
-            }))
+            errorsMessages: newErrors
         });
     }
     const isBlogUpdated = blogs_repository_1.BlogsRepository.updateBlog(id, { name, description, websiteUrl });
