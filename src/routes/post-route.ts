@@ -110,6 +110,11 @@ postRoute.post('/', authMiddleware, titleValidation, shortDescriptionValidation,
 
 postRoute.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, async (req, res) => {
     const id = req.params.id
+
+    if (!id) {
+        return res.sendStatus(404)
+    }
+
     const title = req.body.title
     const shortDescription = req.body.shortDescription
     const content = req.body.content
@@ -125,6 +130,13 @@ postRoute.put('/:id', authMiddleware, titleValidation, shortDescriptionValidatio
                 er.param
             }))
         });
+    }
+
+    const post = await PostsRepository.getPostById(id)
+
+    if (!post) {
+        res.sendStatus(404)
+        return;
     }
 
     const isUpdatePost = await PostsRepository.updatePost(id, {title, shortDescription, content, blogId})

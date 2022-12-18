@@ -81,6 +81,9 @@ exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortD
 });
 exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, async (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        return res.sendStatus(404);
+    }
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
@@ -93,6 +96,11 @@ exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shor
                 message: er.msg, field: er.param
             }))
         });
+    }
+    const post = await posts_repository_1.PostsRepository.getPostById(id);
+    if (!post) {
+        res.sendStatus(404);
+        return;
     }
     const isUpdatePost = await posts_repository_1.PostsRepository.updatePost(id, { title, shortDescription, content, blogId });
     if (!isUpdatePost) {
