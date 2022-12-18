@@ -1,8 +1,7 @@
 import {Router} from "express";
-import {authMiddleware} from "./blog-route";
+import {authMiddleware, blogs} from "./blog-route";
 import {PostsRepository} from "../repositories/posts-repository";
 import {body, validationResult} from "express-validator";
-import {blogs} from "../repositories/testing-repository";
 
 
 export type PostType = {
