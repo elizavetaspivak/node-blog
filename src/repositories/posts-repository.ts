@@ -1,6 +1,8 @@
 import {posts} from "./testing-repository";
 import {blogs} from "../routes/blog-route";
 import {v4} from 'uuid'
+import {blogsCollections, postsCollections} from "../db/mongo";
+import {ObjectId} from "mongodb";
 
 type PostData = {
     title: string,
@@ -10,52 +12,47 @@ type PostData = {
 }
 
 export class PostsRepository {
-    static getAllPosts() {
-        return posts
+    static async getAllPosts() {
+        const posts = await postsCollections.find({}).toArray();
+
+        return posts.map((p: any) => ({
+            id: p._id,
+            title: p.title,
+            shortDescription: p.shortDescription,
+            content: p.content,
+            blogId: p.blogId,
+        }))
     }
 
-    static getPostById(id: string) {
-        const foundedPosts = posts.find(p => p.id === id)
+    static async getPostById(id: string) {
+        const post = await postsCollections.findOne({_id: new ObjectId(id)});
 
-        if (foundedPosts) {
-            return foundedPosts
-        } else {
-            return false
-        }
+        return post
     }
 
-    static createPost(postData: PostData) {
+    static async createPost(postData: PostData) {
+        const res = await postsCollections.insertOne(postData)
 
-        const blog = blogs.find(b => b.id === postData.blogId)
-
-        const newPost = {
-            id: v4(),
-            blogName: blog!.name,
-            ...postData
-        }
-
-        posts.push(newPost)
-
-        return newPost
+        return res.insertedId
     }
 
-    static updatePost(id: string, postData: PostData) {
-        let postIndex = posts.findIndex(v => v.id === id)
-        const post = posts.find(v => v.id === id)
+    static async updatePost(id: string, postData: PostData) {
+        const res = await postsCollections.updateOne({_id: new ObjectId(id)}, {
+                $set: {
+                    title: postData.title,
+                    shortDescription: postData.shortDescription,
+                    content: postData.content,
+                    blogId: postData.blogId
+                }
+            }, {upsert: true}
+        )
 
-        let newItem = {
-            ...post!,
-            ...postData
-        }
-
-        posts.splice(postIndex, 1, newItem)
-
-        return !!post;
+        return !!res.matchedCount;
     }
 
-    static deletePostById(id: string) {
-        let postIndex = posts.findIndex(v => v.id === id)
+    static async deletePostById(id: string) {
+        const res = await postsCollections.deleteOne({_id: new ObjectId(id)})
 
-        posts.splice(postIndex, 1)
+        return !!res.deletedCount
     }
 }

@@ -1,38 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsRepository = void 0;
-const testing_repository_1 = require("./testing-repository");
-const blog_route_1 = require("../routes/blog-route");
-const uuid_1 = require("uuid");
+const mongo_1 = require("../db/mongo");
+const mongodb_1 = require("mongodb");
 class PostsRepository {
-    static getAllPosts() {
-        return testing_repository_1.posts;
+    static async getAllPosts() {
+        const posts = await mongo_1.postsCollections.find({}).toArray();
+        return posts.map((p) => ({
+            id: p._id,
+            title: p.title,
+            shortDescription: p.shortDescription,
+            content: p.content,
+            blogId: p.blogId,
+        }));
     }
-    static getPostById(id) {
-        const foundedPosts = testing_repository_1.posts.find(p => p.id === id);
-        if (foundedPosts) {
-            return foundedPosts;
-        }
-        else {
-            return false;
-        }
+    static async getPostById(id) {
+        const post = await mongo_1.postsCollections.findOne({ _id: new mongodb_1.ObjectId(id) });
+        return post;
     }
-    static createPost(postData) {
-        const blog = blog_route_1.blogs.find(b => b.id === postData.blogId);
-        const newPost = Object.assign({ id: (0, uuid_1.v4)(), blogName: blog.name }, postData);
-        testing_repository_1.posts.push(newPost);
-        return newPost;
+    static async createPost(postData) {
+        const res = await mongo_1.postsCollections.insertOne(postData);
+        return res.insertedId;
     }
-    static updatePost(id, postData) {
-        let postIndex = testing_repository_1.posts.findIndex(v => v.id === id);
-        const post = testing_repository_1.posts.find(v => v.id === id);
-        let newItem = Object.assign(Object.assign({}, post), postData);
-        testing_repository_1.posts.splice(postIndex, 1, newItem);
-        return !!post;
+    static async updatePost(id, postData) {
+        const res = await mongo_1.postsCollections.updateOne({ _id: new mongodb_1.ObjectId(id) }, {
+            $set: {
+                title: postData.title,
+                shortDescription: postData.shortDescription,
+                content: postData.content,
+                blogId: postData.blogId
+            }
+        }, { upsert: true });
+        return !!res.matchedCount;
     }
-    static deletePostById(id) {
-        let postIndex = testing_repository_1.posts.findIndex(v => v.id === id);
-        testing_repository_1.posts.splice(postIndex, 1);
+    static async deletePostById(id) {
+        const res = await mongo_1.postsCollections.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+        return !!res.deletedCount;
     }
 }
 exports.PostsRepository = PostsRepository;

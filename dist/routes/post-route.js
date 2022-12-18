@@ -5,6 +5,7 @@ const express_1 = require("express");
 const blog_route_1 = require("./blog-route");
 const posts_repository_1 = require("../repositories/posts-repository");
 const express_validator_1 = require("express-validator");
+const blogs_repository_1 = require("../repositories/blogs-repository");
 const titleValidation = (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).withMessage('Incorrect title');
 const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription').isLength({
     min: 1,
@@ -14,31 +15,40 @@ const contentValidation = (0, express_validator_1.body)('content').trim().isLeng
     min: 1,
     max: 1000
 }).withMessage('Incorrect content');
-const blogIdValidation = (0, express_validator_1.body)('blogId').custom((value) => {
-    const blog = blog_route_1.blogs.find(b => b.id === value);
+const blogIdValidation = (0, express_validator_1.body)('blogId').custom(async (value) => {
+    const blog = await blogs_repository_1.BlogsRepository.getBlogById(value);
     if (!blog) {
         throw Error('Incorrect blogId');
     }
     return true;
 }).withMessage('Incorrect blogId');
 exports.postRoute = (0, express_1.Router)({});
-exports.postRoute.get('/', (req, res) => {
-    const posts = posts_repository_1.PostsRepository.getAllPosts();
+exports.postRoute.get('/', async (req, res) => {
+    const posts = await posts_repository_1.PostsRepository.getAllPosts();
     res.send(posts);
 });
-exports.postRoute.get('/:id', (req, res) => {
+exports.postRoute.get('/:id', async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.sendStatus(404);
         return;
     }
-    const foundedPost = posts_repository_1.PostsRepository.getPostById(id);
+    const foundedPost = await posts_repository_1.PostsRepository.getPostById(id);
     if (!foundedPost) {
         res.sendStatus(404);
     }
-    res.send(foundedPost);
+    const postForClient = {
+        id: foundedPost._id,
+        title: foundedPost.title,
+        shortDescription: foundedPost.shortDescription,
+        content: foundedPost.content,
+        blogId: foundedPost.blogId,
+        blogName: foundedPost.blogName,
+        createdAt: foundedPost.createdAt
+    };
+    res.send(postForClient);
 });
-exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
+exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, async (req, res) => {
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
@@ -52,10 +62,15 @@ exports.postRoute.post('/', blog_route_1.authMiddleware, titleValidation, shortD
             }))
         });
     }
-    const createdPost = posts_repository_1.PostsRepository.createPost({ title, shortDescription, content, blogId });
-    res.status(201).json(createdPost);
+    const createdPostId = await posts_repository_1.PostsRepository.createPost({ title, shortDescription, content, blogId });
+    const post = await posts_repository_1.PostsRepository.getPostById(createdPostId);
+    const createdPostMapper = {
+        id: createdPostId,
+        title, shortDescription, content, blogId, blogName: post.blogName, createdAt: post.createdAt
+    };
+    res.status(201).json(createdPostMapper);
 });
-exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, (req, res) => {
+exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, async (req, res) => {
     const id = req.params.id;
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
@@ -70,22 +85,22 @@ exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shor
             }))
         });
     }
-    const isUpdatePost = posts_repository_1.PostsRepository.updatePost(id, { title, shortDescription, content, blogId });
+    const isUpdatePost = await posts_repository_1.PostsRepository.updatePost(id, { title, shortDescription, content, blogId });
     if (!isUpdatePost) {
         res.sendStatus(404);
     }
     res.sendStatus(204);
 });
-exports.postRoute.delete('/:id', blog_route_1.authMiddleware, (req, res) => {
+exports.postRoute.delete('/:id', blog_route_1.authMiddleware, async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.sendStatus(404);
     }
-    const post = posts_repository_1.PostsRepository.getPostById(id);
+    const post = await posts_repository_1.PostsRepository.getPostById(id);
     if (!post) {
         res.sendStatus(404);
         return;
     }
-    posts_repository_1.PostsRepository.deletePostById(id);
+    await posts_repository_1.PostsRepository.deletePostById(id);
     res.sendStatus(204);
 });
