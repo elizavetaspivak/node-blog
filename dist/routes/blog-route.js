@@ -33,6 +33,9 @@ exports.blogRoute.get('/', async (req, res) => {
 });
 exports.blogRoute.get('/:id', async (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        return res.sendStatus(404);
+    }
     const blog = await blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blog) {
         return res.sendStatus(404);
@@ -76,6 +79,9 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
 });
 exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, async (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        return res.sendStatus(404);
+    }
     const name = req.body.name;
     const description = req.body.description;
     const websiteUrl = req.body.websiteUrl;
@@ -95,6 +101,11 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
             errorsMessages: newErrors
         });
     }
+    const blog = await blogs_repository_1.BlogsRepository.getBlogById(id);
+    if (!blog) {
+        res.sendStatus(404);
+        return;
+    }
     const isBlogUpdated = await blogs_repository_1.BlogsRepository.updateBlog(id, { name, description, websiteUrl });
     if (!isBlogUpdated) {
         res.sendStatus(404);
@@ -103,7 +114,10 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
 });
 exports.blogRoute.delete('/:id', exports.authMiddleware, async (req, res) => {
     const id = req.params.id;
-    const blog = blogs_repository_1.BlogsRepository.getBlogById(id);
+    if (!id) {
+        return res.sendStatus(404);
+    }
+    const blog = await blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blog) {
         res.sendStatus(404);
         return;

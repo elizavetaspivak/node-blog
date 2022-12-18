@@ -133,6 +133,13 @@ blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, web
         });
     }
 
+    const blog = await BlogsRepository.getBlogById(id)
+
+    if (!blog) {
+        res.sendStatus(404)
+        return;
+    }
+
     const isBlogUpdated = await BlogsRepository.updateBlog(id, {name, description, websiteUrl})
 
     if (!isBlogUpdated) {
@@ -149,7 +156,7 @@ blogRoute.delete('/:id', authMiddleware, async (req, res) => {
         return res.sendStatus(404)
     }
 
-    const blog = BlogsRepository.getBlogById(id)
+    const blog = await BlogsRepository.getBlogById(id)
 
     if (!blog) {
         res.sendStatus(404)
