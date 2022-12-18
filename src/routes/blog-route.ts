@@ -64,7 +64,7 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
 
     const createdBlog = BlogsRepository.createBlog({name, description, websiteUrl})
 
-    res.send(createdBlog)
+    res.status(201).json(createdBlog)
 })
 
 blogRoute.put('/:id', authMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, (req, res) => {
