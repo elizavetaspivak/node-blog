@@ -79,8 +79,11 @@ exports.postRoute.put('/:id', blog_route_1.authMiddleware, titleValidation, shor
 });
 exports.postRoute.delete('/:id', blog_route_1.authMiddleware, (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        res.sendStatus(404);
+    }
     const post = posts_repository_1.PostsRepository.deletePostById(id);
-    if (!post || !id) {
+    if (!post) {
         res.sendStatus(404);
         return;
     }

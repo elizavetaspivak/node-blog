@@ -25,6 +25,10 @@ exports.blogRoute.get('/', (req, res) => {
 });
 exports.blogRoute.get('/:id', (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        res.sendStatus(404);
+        return;
+    }
     const blogs = blogs_repository_1.BlogsRepository.getBlogById(id);
     if (!blogs) {
         res.sendStatus(404);
@@ -84,6 +88,9 @@ exports.blogRoute.put('/:id', exports.authMiddleware, nameValidation, descriptio
 });
 exports.blogRoute.delete('/:id', exports.authMiddleware, (req, res) => {
     const id = req.params.id;
+    if (!id) {
+        res.sendStatus(404);
+    }
     const blogs = blogs_repository_1.BlogsRepository.deleteBlogById(id);
     if (!blogs) {
         res.sendStatus(404);
