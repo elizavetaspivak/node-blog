@@ -5,7 +5,6 @@ const express_1 = require("express");
 const blog_route_1 = require("./blog-route");
 const posts_repository_1 = require("../repositories/posts-repository");
 const express_validator_1 = require("express-validator");
-const testing_repository_1 = require("../repositories/testing-repository");
 const titleValidation = (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).withMessage('Incorrect title');
 const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription').isLength({
     min: 1,
@@ -16,7 +15,7 @@ const contentValidation = (0, express_validator_1.body)('content').trim().isLeng
     max: 1000
 }).withMessage('Incorrect content');
 const blogIdValidation = (0, express_validator_1.body)('blogId').custom((value) => {
-    const blog = testing_repository_1.blogs.find(b => b.id === value);
+    const blog = blog_route_1.blogs.find(b => b.id === value);
     if (!blog) {
         throw Error('Incorrect blogId');
     }

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogsRepository = void 0;
 const blog_route_1 = require("../routes/blog-route");
+const uuid_1 = require("uuid");
 class BlogsRepository {
     static getAllBlogs() {
         return blog_route_1.blogs;
@@ -10,7 +11,7 @@ class BlogsRepository {
         return blog_route_1.blogs.find(b => b.id === id);
     }
     static createBlog(createdData) {
-        const newBlog = Object.assign({ id: new Date().getDate().toString() }, createdData);
+        const newBlog = Object.assign({ id: (0, uuid_1.v4)() }, createdData);
         blog_route_1.blogs.push(newBlog);
         return newBlog;
     }

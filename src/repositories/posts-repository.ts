@@ -1,5 +1,6 @@
-import { posts} from "./testing-repository";
+import {posts} from "./testing-repository";
 import {blogs} from "../routes/blog-route";
+import {v4} from 'uuid'
 
 type PostData = {
     title: string,
@@ -28,7 +29,7 @@ export class PostsRepository {
         const blog = blogs.find(b => b.id === postData.blogId)
 
         const newPost = {
-            id: new Date().getDate().toString(),
+            id: v4(),
             blogName: blog!.name,
             ...postData
         }

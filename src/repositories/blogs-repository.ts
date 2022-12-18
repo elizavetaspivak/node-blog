@@ -1,4 +1,5 @@
 import {blogs} from "../routes/blog-route";
+import {v4} from "uuid";
 
 type CreatePostData = {
     name: string
@@ -17,7 +18,7 @@ export class BlogsRepository {
 
     static createBlog(createdData: CreatePostData) {
         const newBlog = {
-            id: new Date().getDate().toString(),
+            id: v4(),
             ...createdData
         }
 
