@@ -3,6 +3,7 @@ import {authMiddleware} from "./blog-route";
 import {PostsRepository} from "../repositories/posts-repository";
 import {body, validationResult} from "express-validator";
 import {blogs} from "../repositories/testing-repository";
+import {VideosRepository} from "../repositories/videos-repository";
 
 
 export type PostType = {
@@ -114,14 +115,17 @@ postRoute.delete('/:id', authMiddleware, (req, res) => {
 
     if (!id) {
         res.sendStatus(404)
+
     }
 
-    const post = PostsRepository.deletePostById(id)
+    const post = PostsRepository.getPostById(id)
 
     if (!post) {
         res.sendStatus(404)
-        return
+        return;
     }
+
+    PostsRepository.deletePostById(id)
 
     res.sendStatus(204)
 })

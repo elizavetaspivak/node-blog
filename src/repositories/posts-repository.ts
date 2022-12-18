@@ -53,10 +53,7 @@ export class PostsRepository {
 
     static deletePostById(id: string) {
         let postIndex = posts.findIndex(v => v.id === id)
-        const post = posts.find(v => v.id === id)
 
         posts.splice(postIndex, 1)
-
-        return !!post;
     }
 }
