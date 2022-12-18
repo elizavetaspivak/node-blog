@@ -54,7 +54,8 @@ blogRoute.get('/:id', async (req, res) => {
         id: blog._id,
         name: blog.name,
         description: blog.description,
-        websiteUrl: blog.websiteUrl
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt
     }
 
     res.send(blogForClient)
@@ -64,6 +65,7 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
     const name = req.body.name
     const description = req.body.description
     const websiteUrl = req.body.websiteUrl
+    const createdAt = new Date().toISOString()
 
     const errors = validationResult(req)
 
@@ -86,11 +88,11 @@ blogRoute.post('/', authMiddleware, nameValidation, descriptionValidation, websi
     }
 
 
-    const createdBlogId = await BlogsRepository.createBlog({name, description, websiteUrl})
+    const createdBlogId = await BlogsRepository.createBlog({name, description, websiteUrl, createdAt})
 
     const createdBlogMapper = {
         id: createdBlogId,
-        name, description, websiteUrl
+        name, description, websiteUrl, createdAt
     }
 
     res.status(201).json(createdBlogMapper)

@@ -5,6 +5,13 @@ type CreatePostData = {
     name: string
     description: string
     websiteUrl: string
+    createdAt: string
+}
+
+type UpdatePostData = {
+    name: string
+    description: string
+    websiteUrl: string
 }
 
 export class BlogsRepository {
@@ -31,7 +38,7 @@ export class BlogsRepository {
         return res.insertedId
     }
 
-    static async updateBlog(id: string, updatedData: CreatePostData) {
+    static async updateBlog(id: string, updatedData: UpdatePostData) {
         const res = await blogsCollections.updateOne({_id: new ObjectId(id)}, {
                 $set: {
                     "name": updatedData.name,

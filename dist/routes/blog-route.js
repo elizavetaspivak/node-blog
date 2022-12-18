@@ -41,7 +41,8 @@ exports.blogRoute.get('/:id', async (req, res) => {
         id: blog._id,
         name: blog.name,
         description: blog.description,
-        websiteUrl: blog.websiteUrl
+        websiteUrl: blog.websiteUrl,
+        createdAt: blog.createdAt
     };
     res.send(blogForClient);
 });
@@ -49,6 +50,7 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
     const name = req.body.name;
     const description = req.body.description;
     const websiteUrl = req.body.websiteUrl;
+    const createdAt = new Date().toISOString();
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const err = errors.array();
@@ -65,10 +67,10 @@ exports.blogRoute.post('/', exports.authMiddleware, nameValidation, descriptionV
             errorsMessages: newErrors
         });
     }
-    const createdBlogId = await blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl });
+    const createdBlogId = await blogs_repository_1.BlogsRepository.createBlog({ name, description, websiteUrl, createdAt });
     const createdBlogMapper = {
         id: createdBlogId,
-        name, description, websiteUrl
+        name, description, websiteUrl, createdAt
     };
     res.status(201).json(createdBlogMapper);
 });
