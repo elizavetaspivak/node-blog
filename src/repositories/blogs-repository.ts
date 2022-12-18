@@ -22,7 +22,8 @@ export class BlogsRepository {
             id: b._id,
             name: b.name,
             description: b.description,
-            websiteUrl: b.websiteUrl
+            websiteUrl: b.websiteUrl,
+            createdAt: b.createdAt
         }))
     }
 
