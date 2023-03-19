@@ -8,6 +8,8 @@ export const client = new MongoClient(uri, {
     serverApi: ServerApiVersion.v1
 });
 
+//test
+
 export const database = client.db('blogs')
 
 export const blogsCollections = database.collection('blogs')
